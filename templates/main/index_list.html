@@ -1,0 +1,23 @@
+<table class="table table-dark">
+	
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Name</th>
+      <th scope="col">Phone</th>
+      <th scope="col">Website</th>
+      <th scope="col">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% for lead in leads %}
+    <tr>
+      <th scope="row">{{forloop.counter}}</th>
+      <td>{{lead.name | truncatechars:25}}</td>
+      <td>{{lead.phone}}</td>
+      <td><a target="_blank" href="{{ lead.website | cut }}">{{lead.website | site_strip}}</a></td>
+      <td>{{lead.website_status}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

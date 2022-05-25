@@ -1,0 +1,50 @@
+{% load custom_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>
+		hellow world
+	</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+
+
+
+
+<div hx-get="/refresh"
+    hx-trigger="load delay:1s"
+    hx-swap="outerHTML"
+>
+</div>
+<a >hello</a>
+
+<h1>LEAD LIST</h1>  
+<table class="table table-dark">
+	
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Name</th>
+      <th scope="col">Phone</th>
+      <th scope="col">Website</th>
+      <th scope="col">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+  	{% for lead in leads %}
+    <tr>
+      <th scope="row">{{forloop.counter}}</th>
+      <td>{{lead.name | truncatechars:25}}</td>
+      <td>{{lead.phone}}</td>
+      <td><a target="_blank" href="{{ lead.website | cut }}">{{lead.website | site_strip}}</a></td>
+      <td>{{lead.website_status}}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+</body>
+</html>
