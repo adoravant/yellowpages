@@ -1,1 +1,0 @@
-"#beautifulsoup #requests #django" 

@@ -12,7 +12,7 @@ import time
 from datetime import date, datetime
 from main.models import Lead, Dato
 
-#AUTOMATION
+# AUTOMATION
 import requests
 requests.adapters.DEFAULT_RETRIES = 2
 from bs4 import BeautifulSoup
@@ -20,10 +20,12 @@ from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, ElementClickInterceptedException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
-#CLIPBOARD
+# CLIPBOARD
 from io import BytesIO
-import win32clipboard
+# import win32clipboard
 from PIL import Image
 
 
@@ -40,13 +42,15 @@ data = output.getvalue()[14:]
 output.close()
 
 
-def send_to_clipboard(clip_type, data):
-	win32clipboard.OpenClipboard()
-	win32clipboard.EmptyClipboard()
-	win32clipboard.SetClipboardData(win32clipboard.CF_DIB, data)
-	win32clipboard.CloseClipboard()
+
+
+# def send_to_clipboard(clip_type, data):
+# 	win32clipboard.OpenClipboard()
+# 	win32clipboard.EmptyClipboard()
+# 	win32clipboard.SetClipboardData(win32clipboard.CF_DIB, data)
+# 	win32clipboard.CloseClipboard()
 msg = "chequea asjkdhasjkdhjka shjkdahsjkdhjk hasdhk jashd kjhasjkdhjaksdhajkhdkjsjkhkjah kjhkahdskjahdkjhaskj hakjshdjkashdkjahkjashdkj hakhdkjh https://google.com"
-send_to_clipboard(win32clipboard.CF_DIB, data)
+# send_to_clipboard(win32clipboard.CF_DIB, data)
 
 
 
@@ -91,28 +95,27 @@ def get_citylist():
 	
 	return citylist
 
-
-#START WHATSAPP
+# ---- WHATSAPP ----
 def new_chat(user, chrome_browser, check):
-	new_chat = chrome_browser.find_element(By.XPATH, '//*[@id="side"]/div[1]/div/label/div/div[2]')
-	
-	new_chat.send_keys(user.phone)
-	time.sleep(2)
-	
-	try:
-		username = chrome_browser.find_element(By.XPATH, '//span[@title="{}"]'.format(user.phone))
-		if check == True:
-			user.phone_type = "WHATSAPP"
-			user.save()
-		else:
-			username.click()
-		
-	except NoSuchElementException as se:
-		user.phone_type = "REGULAR"
-		user.save()
-		print(f'{user.phone} not in whatsapp')
-	close_search = chrome_browser.find_element(By.XPATH, '//*[@id="side"]/div[1]/div/span/button')
-	close_search.click()
+    new_chat = chrome_browser.find_element(By.XPATH, '//*[@id="side"]/div[1]/div/label/div/div[2]')
+    new_chat.send_keys(user.phone)
+    time.sleep(2)
+
+    try:
+        username = chrome_browser.find_element(By.XPATH, '//span[@title="{}"]'.format(user.phone))
+        if check:
+            user.phone_type = "WHATSAPP"
+            user.save()
+        else:
+            username.click()
+    except NoSuchElementException:
+        user.phone_type = "REGULAR"
+        user.save()
+        print(f'{user.phone} not in whatsapp')
+
+    close_search = chrome_browser.find_element(By.XPATH, '//*[@id="side"]/div[1]/div/span/button')
+    close_search.click()
+
 
 	# except Exception as e:
 	#     chrome_browser.close()
@@ -120,61 +123,54 @@ def new_chat(user, chrome_browser, check):
 	#     sys.exit()
 
 
-def run_whatsapp(check=True):   
-	while True:
-		# if msgDate == today:
-		#     current_time = datetime.now().strftime("%H:%M:%S")
-		#     if current_time >= msgTime:
-		options = webdriver.ChromeOptions()
-		options.add_argument(r'--user-data-dir=C:\\Users\\pc\\AppData\\Local\\Google\\Chrome\\User Data\\Default')
-		options.add_argument('--profile-directory=Default')
-		chrome_browser = webdriver.Chrome('C:\\Users\\pc\\Desktop\\chromedriver.exe', options=options)
+def run_whatsapp(check=True):
+    while True:
+        options = webdriver.ChromeOptions()
+        options.add_argument(r'--user-data-dir=C:\\Users\\pc\\AppData\\Local\\Google\\Chrome\\User Data\\Default')
+        options.add_argument('--profile-directory=Default')
 
-		chrome_browser.get('https://web.whatsapp.com/')
-		#SCAN QR CODE
-		time.sleep(40)
-		
-		if check == True:
-			user_list = Dato.objects.all().filter(phone_type="WHATSAPP")
-			# user_list = Dato.objects.all().exclude(phone_type="WHATSAPP").exclude(phone_type="REGULAR")
-		else:
-			user_list = Dato.objects.filter(name__in=["Oscar Oso", "Ivet"])
-			#user_list = Dato.objects.filter(phone_type="WHATSAPP") 
-		
-		for user in user_list:
-			try:
-				user = chrome_browser.find_element(By.XPATH, '//span[@title="{}"]'.format(user.name))
-				user.click()
-			except NoSuchElementException as se:
-				new_chat(user, chrome_browser, check)
-				time.sleep(1)
-			if check == False:
-				try:        
-					time.sleep(2)
-					message_box = chrome_browser.find_element(By.XPATH, '//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[2]')
-					time.sleep(2)
-					#PEGAR FOTO SI ES CON FOTO
-					message_box.send_keys(Keys.CONTROL, 'v')
-					time.sleep(1)
-					message_box = chrome_browser.find_element(By.XPATH, '//*[@id="app"]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/div/div[1]/div[3]/div/div/div[2]/div[1]/div[2]')
-					message_box.send_keys(msg)
-					send_button = chrome_browser.find_element(By.XPATH,  '//*[@id="app"]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/div/div[2]/div[2]/div/div')
-					send_button.click()
-					time.sleep(0.5)
-					more_button = chrome_browser.find_element(By.XPATH, '//*[@id="main"]/header/div[3]/div/div[2]/div/div')
-					more_button.click()
-					delete_chat_button = chrome_browser.find_element(By.XPATH, '//*[@id="app"]/div/span[4]/div/ul/div/div/li[6]/div[1]')
-					time.sleep(1)                                             
-					delete_chat_button.click()
-					time.sleep(1)
-					confirm_delete_button = chrome_browser.find_element(By.XPATH, '//*[@id="app"]/div/span[2]/div/div/div/div/div/div/div[3]/div/div[2]')
-					confirm_delete_button.click()
-					confirm_delete_button.click()   
-					time.sleep(2)
-					time.sleep(2)
-				except:
-					continue
-		break
+        chrome_browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+        chrome_browser.get('https://web.whatsapp.com/')
+        time.sleep(40)  # Tiempo para escanear QR
+
+        if check:
+            user_list = Dato.objects.all().filter(phone_type="WHATSAPP")
+        else:
+            user_list = Dato.objects.filter(name__in=["Oscar Oso", "Ivet"])
+
+        for user in user_list:
+            try:
+                usr = chrome_browser.find_element(By.XPATH, '//span[@title="{}"]'.format(user.name))
+                usr.click()
+            except NoSuchElementException:
+                new_chat(user, chrome_browser, check)
+                time.sleep(1)
+
+            if not check:
+                try:
+                    time.sleep(2)
+                    message_box = chrome_browser.find_element(By.XPATH, '//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[2]')
+                    time.sleep(2)
+                    message_box.send_keys(Keys.CONTROL, 'v')
+                    time.sleep(1)
+                    message_box = chrome_browser.find_element(By.XPATH, '//*[@id="app"]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/div/div[1]/div[3]/div/div/div[2]/div[1]/div[2]')
+                    message_box.send_keys(msg)
+                    send_button = chrome_browser.find_element(By.XPATH, '//*[@id="app"]/div/div/div[2]/div[2]/span/div/span/div/div/div[2]/div/div[2]/div[2]/div/div')
+                    send_button.click()
+                    time.sleep(0.5)
+                    more_button = chrome_browser.find_element(By.XPATH, '//*[@id="main"]/header/div[3]/div/div[2]/div/div')
+                    more_button.click()
+                    delete_chat_button = chrome_browser.find_element(By.XPATH, '//*[@id="app"]/div/span[4]/div/ul/div/div/li[6]/div[1]')
+                    time.sleep(1)
+                    delete_chat_button.click()
+                    time.sleep(1)
+                    confirm_delete_button = chrome_browser.find_element(By.XPATH, '//*[@id="app"]/div/span[2]/div/div/div/div/div/div/div[3]/div/div[2]')
+                    confirm_delete_button.click()
+                    confirm_delete_button.click()
+                    time.sleep(2)
+                except:
+                    continue
+        break
 #END WHATSAPP
 
 #START .CA SCRAPPER
@@ -219,24 +215,25 @@ def website_info(obj=None):
 		websites = Lead.objects.filter(country="CANADA").filter(website_type="REGULAR").filter(website_status__startswith="DOWNSSL")
 		#Lead.objects.filter(country="CANADA").filter(website_type="REGULAR").filter(website_status=None)
 		#Lead.objects.filter(country="CANADA").filter(search_tag="Lawyer").exclude(website="NOWEB").exclude(website_status=None).exclude(website_type="FACEBOOK").filter(website_status="DOWNSSL")
-		for website in websites:
+		for lead in websites:  # mejor nombre que 'website'
 			try:
-				r = requests.get(website)
+				r = requests.get(lead.website)
 				x = str(r.status_code)
-				if r.url.startswith("https") == False:
+				if not r.url.startswith("https"):
 					x += "NOSSL"
 			except:
 				x = "DOWNSSL"
+
 			if x == "503":
 				try:
 					if "Your access to this" in r.text:
 						x = "BLOCKED"
 				except:
-					print("last except what?")
+					pass
 
-			a.website_status = x
-			a.save()
- 
+			lead.website_status = x
+			lead.save()
+
 def get_page_info(city_link, term):
 	#returns total de páginas para una búsqueda"
 	phonelist = []
@@ -345,104 +342,114 @@ def send_message(chrome_browser):
 		print("entre except")
 
 
+# ---- FACEBOOK ----
 def visit_facebook():
-	pages = Lead.objects.filter(website_type="FACEBOOK").values_list("website", flat=True)
-	options = webdriver.ChromeOptions()
-	options.add_argument(r'--user-data-dir=C:\\Users\\pc\\AppData\\Local\\Google\\Chrome\\User Data\\Default')
-	options.add_argument('--profile-directory=Default')
-	chrome_browser = webdriver.Chrome('C:\\Users\\pc\\Desktop\\chromedriver.exe', options=options)
-	for page in pages:
-		time.sleep(3)
-		chrome_browser.get(page)
-		if pages[0] == page:
-			try:
-				time.sleep(3)
-				chrome_browser.find_element(By.XPATH, '//span[text()="Abrahan"]')
-			except NoSuchElementException:
-				user = chrome_browser.find_element(By.XPATH, '//*[@id="email"]')
-				user.send_keys("adoravant@gmail.com")
-				password = chrome_browser.find_element(By.XPATH, '//*[@id="pass"]')
-				password.send_keys("Dereversa15389!")
-				
-				time.sleep(1.5)
-				login_button = chrome_browser.find_element(By.ID, 'loginbutton')
-				login_button.click()
-				logged = True
-				time.sleep(3)   
-		
-		send_message(chrome_browser)
+    pages = Lead.objects.filter(website_type="FACEBOOK").values_list("website", flat=True)
+    options = webdriver.ChromeOptions()
+    options.add_argument(r'--user-data-dir=C:\\Users\\pc\\AppData\\Local\\Google\\Chrome\\User Data\\Default')
+    options.add_argument('--profile-directory=Default')
+    chrome_browser = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
+    for page in pages:
+        time.sleep(3)
+        chrome_browser.get(page)
+        if pages[0] == page:
+            try:
+                time.sleep(3)
+                chrome_browser.find_element(By.XPATH, '//span[text()="Abrahan"]')
+            except NoSuchElementException:
+                user = chrome_browser.find_element(By.XPATH, '//*[@id="email"]')
+                user.send_keys("adoravant@gmail.com")
+                password = chrome_browser.find_element(By.XPATH, '//*[@id="pass"]')
+                password.send_keys("Dereversa15389!")
+                time.sleep(1.5)
+                login_button = chrome_browser.find_element(By.ID, 'loginbutton')
+                login_button.click()
+                time.sleep(3)
+
+        # Enviar mensaje
+        try:
+            msg_button_1 = chrome_browser.find_element(By.CSS_SELECTOR, 'span.a8c37x1j.ni8dbmo4.stjgntxs.l9j0dhe7.ltmttdrg.g0qnabr5.ojkyduve')
+            if msg_button_1.text == "Enviar mensaje":
+                msg_button_1.click()
+                time.sleep(4)
+                text_box = chrome_browser.find_element(By.CSS_SELECTOR, 'div.oo9gr5id.lzcic4wl.l9j0dhe7.gsox5hk5.buofh1pr.tw4czcav.cehpxlet.hpfvmrgz.eg9m0zos.notranslate')
+                text_box.send_keys("?asdasdas")
+        except:
+            print("no tiene boton de enviar mensaje")
+
+
+
 #END FACEBOOK
 
 
-#START GUIA CORES
-def guia_cores():
-	busquedas = ["INMOBILIARIA"]
-
-	for busqueda in busquedas:
-		next_url = f"https://www.guiacores.com.ar/index.php?r=search%2Findex&b={busqueda}&R=&L=&Twa=1&NTw=1"
-		r = requests.get(next_url)
-		html = r.content
-		sup = BeautifulSoup(html)
-		div_listing = sup.find_all('div', {"class" : "datos"})
-		count= 0
-		for div in div_listing:
-			nombre_comercio = div.find("span", {"class": "nombre-comercio"}).text
-			whatsapp_comercio = div.find("a", {"class": "search-result-link"}).text
-			count += 1
-			print(count, nombre_comercio, whatsapp_comercio)
-			import time
-
-
-		return div_listing
-
-
+# ---- GUIA CORES ----
 def guia():
-	driver = webdriver.Chrome('C:\\Users\\pc\\Desktop\\chromedriver.exe')
-	# busquedas = ["PETRO", "INMO", "ABOGA", "FERRETERIA", "DISTRIBU", "SERVICIO", "MAQUIN", "PROFES"]
-	busquedas = ["S.R.L.", "S.A."]
-	for busqueda in busquedas:
-		next_url = f"https://www.guiacores.com.ar/index.php?r=search%2Findex&b={busqueda}&R=&L=&Twa=1&NTw=1"
-		driver.get(next_url)
-		time.sleep(5) # Let the user actually see something!
-		driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-		time.sleep(1)
-		while True:
-			try:
-				load_button = driver.find_element_by_xpath('//*[@id="ver-mas"]')
-				load_button.click()
-				driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-				time.sleep(5)
-			except:
-				break
-		html = driver.page_source        
-		sup = BeautifulSoup(html)
-		div_listing = sup.find_all('div', {"class" : "datos"})
-		count = 0
-		for div in div_listing:
-			nombre_comercio = div.find("span", {"class": "nombre-comercio"}).text
-			whatsapp_comercio = div.find("a", {"class": "search-result-link"}).text
-			obj, created = Lead.objects.update_or_create(
-				name=nombre_comercio,
-				phone=whatsapp_comercio,
-				phone_type="WHATSAPP",
-				city="NEUQUEN",
-				state="NQ",
-				country="ARGENTINA")    
-			count += 1
-			if created:
-				print("object created", count, nombre_comercio, whatsapp_comercio, "NEUQUEN")
-			else:
-				print("object updated", count, nombre_comercio, whatsapp_comercio, "NEUQUEN")
-#END GUIA CORES
+    from selenium.webdriver.chrome.service import Service
+    from webdriver_manager.chrome import ChromeDriverManager
+    import time
+    from selenium import webdriver
+    from bs4 import BeautifulSoup
+    from main.models import Lead
+
+    # Configuración de Chrome
+    options = webdriver.ChromeOptions()
+    options.add_argument("--start-maximized")
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
+    busquedas = ["concesionario"]
+    for busqueda in busquedas:
+        next_url = f"https://www.guiacores.com.ar/index.php?r=search%2Findex&b={busqueda}&R=&L=&Twa=1&NTw=1"
+        driver.get(next_url)
+        time.sleep(5)
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(1)
+
+        # Cargar todos los resultados
+        while True:
+            try:
+                load_button = driver.find_element("xpath", '//*[@id="ver-mas"]')
+                load_button.click()
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                time.sleep(5)
+            except:
+                break
+
+        # Parsear HTML
+        html = driver.page_source
+        sup = BeautifulSoup(html, "html.parser")
+        div_listing = sup.find_all('div', {"class": "datos"})
+
+        count = 0
+        for div in div_listing:
+            nombre_comercio = div.find("span", {"class": "nombre-comercio"}).text.strip()
+            whatsapp_comercio = div.find("a", {"class": "search-result-link"}).text.strip()
+
+            try:
+                obj, created = Lead.objects.update_or_create(
+                    phone=whatsapp_comercio,
+                    defaults={
+                        'name': nombre_comercio,
+                        'phone_type': "WHATSAPP",
+                        'city': "NEUQUEN",
+                        'state': "NQ",
+                        'country': "ARGENTINA"
+                    }
+                )
+                count += 1
+                if created:
+                    print("object created", count, nombre_comercio, whatsapp_comercio, "NEUQUEN")
+                else:
+                    print("object updated", count, nombre_comercio, whatsapp_comercio, "NEUQUEN")
+            except Exception as e:
+                print("Error creando/updating objeto:", whatsapp_comercio, e)
 
 
-
-   
 if __name__ == '__main__':
-	print("200", Lead.objects.filter(country="CANADA").filter(website_type="REGULAR").filter(website_status="200").count())
-	print("200 SSL ISSUE" , Lead.objects.filter(country="CANADA").filter(website_type="REGULAR").filter(website_status="200NOSSL").count())
-	print("400", Lead.objects.filter(country="CANADA").filter(website_type="REGULAR").filter(website_status__startswith="4").count())
-	print("500", Lead.objects.filter(country="CANADA").filter(website_type="REGULAR").filter(website_status__startswith="5").count())
-	print("BLOCKED", Lead.objects.filter(country="CANADA").filter(website_type="REGULAR").filter(website_status__startswith="BLOCKED").count())
-	print("DOWN", Lead.objects.filter(country="CANADA").filter(website_type="REGULAR").filter(website_status__startswith="DOWNSSL").count())
-	website_info()
+    print("200", Lead.objects.filter(country="CANADA").filter(website_type="REGULAR").filter(website_status="200").count())
+    print("200 SSL ISSUE", Lead.objects.filter(country="CANADA").filter(website_type="REGULAR").filter(website_status="200NOSSL").count())
+    print("400", Lead.objects.filter(country="CANADA").filter(website_type="REGULAR").filter(website_status__startswith="4").count())
+    print("500", Lead.objects.filter(country="CANADA").filter(website_type="REGULAR").filter(website_status__startswith="5").count())
+    print("BLOCKED", Lead.objects.filter(country="CANADA").filter(website_type="REGULAR").filter(website_status__startswith="BLOCKED").count())
+    print("DOWN", Lead.objects.filter(country="CANADA").filter(website_type="REGULAR").filter(website_status__startswith="DOWNSSL").count())
+    website_info()

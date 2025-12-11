@@ -21,10 +21,12 @@ app_name = 'main'  # here for namespacing of urls.
 
 urlpatterns = [
     path("", views.home, name="home"),
+    path("call-phone/", views.call_phone, name="call_phone"),
 ]
 
 
-htmx_urlpatterns = [ path("/refresh", views.refresh, name="refresh"),]
+htmx_urlpatterns = [ path("refresh/", views.refresh, name="refresh")]
+
 
 
 urlpatterns += htmx_urlpatterns
