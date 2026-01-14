@@ -164,6 +164,7 @@ class LeadFunnelState(models.Model):
     Compatible 100% con tu FunnelEngine, ActionResolver,
     ActionApplier, StepNavigator y Simulator.
     """
+    mock_message = models.TextField(blank=True, null=True, help_text="TEMPORAL - MOCK")
     STATUS_CHOICES = [
         ("active", "Activo"),
         ("closed", "Cerrado"),

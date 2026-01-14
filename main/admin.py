@@ -2,6 +2,11 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 from .models import LeadFull, DiagnosticoTecnico
 
+from django.contrib import admin
+from django.utils.safestring import mark_safe
+
+from .models import LeadFull, DiagnosticoTecnico
+
 
 @admin.register(LeadFull)
 class LeadFullAdmin(admin.ModelAdmin):
@@ -15,8 +20,9 @@ class LeadFullAdmin(admin.ModelAdmin):
         "website_link",
         "website_status",
         "email",
-        "logo_url"
+        "logo_url",
     )
+
     search_fields = (
         "name",
         "phone",
@@ -25,13 +31,31 @@ class LeadFullAdmin(admin.ModelAdmin):
         "website_type",
         "whatsapp_url",
     )
-    list_filter = ("website_status", )
 
-    # ---- WHATSAPP LINK ----
+    list_filter = ("website_status",)
+
+    # ---- TELÉFONO ----
+    def phone_link(self, obj):
+        if not obj.phone:
+            return "—"
+
+        phone = (
+            obj.phone
+            .replace(" ", "")
+            .replace("-", "")
+            .replace("(", "")
+            .replace(")", "")
+        )
+
+        return mark_safe(
+            f'<a href="tel:{phone}">📞 Llamar</a>'
+        )
+
+    phone_link.short_description = "Teléfono"
+    phone_link.admin_order_field = "phone"
+
+    # ---- WHATSAPP ----
     def whatsapp_link(self, obj):
-        """
-        Muestra un link que dice 'WhatsApp' usando obj.whatsapp_url real.
-        """
         if not obj.whatsapp_url:
             return "—"
 
@@ -44,52 +68,31 @@ class LeadFullAdmin(admin.ModelAdmin):
 
     # ---- DETALLE URL ----
     def detalle_url_link(self, obj):
-        if obj.detalle_url:
-            return mark_safe(f'<a href="{obj.detalle_url}" target="_blank">Ver detalle</a>')
-        return "—"
-    detalle_url_link.short_description = "Detalle URL"
+        if not obj.detalle_url:
+            return "—"
+
+        return mark_safe(
+            f'<a href="{obj.detalle_url}" target="_blank">Ver detalle</a>'
+        )
+
+    detalle_url_link.short_description = "Detalle"
     detalle_url_link.admin_order_field = "detalle_url"
 
     # ---- WEBSITE ----
     def website_link(self, obj):
-        if obj.website:
-            return mark_safe(f'<a href="{obj.website}" target="_blank">{obj.website}</a>')
-        return "—"
+        if not obj.website:
+            return "—"
+
+        return mark_safe(
+            f'<a href="{obj.website}" target="_blank">{obj.website}</a>'
+        )
+
     website_link.short_description = "Website"
     website_link.admin_order_field = "website"
 
-    # ---- FUNNEL ----
-    def funnel_actual(self, obj):
-        state = obj.funnels_state.first()
-        return state.funnel.nombre if state else "—"
-    funnel_actual.short_description = "Funnel"
 
-    def phone_link(self, obj):
-        if obj.phone:
-            return mark_safe(
-                f'<a href="/call-phone/?number={obj.phone}" target="_blank">Llamar</a>'
-            )
-        return "—"
-    
-    # main/admin.py
-from django.utils.safestring import mark_safe
-
-class LeadFullAdmin(admin.ModelAdmin):
-    list_display = ("name", "phone_link", ...)
-
-    def phone_link(self, obj):
-        if obj.phone:
-            return mark_safe(
-                f'<a href="/call-phone/?number={obj.phone}" target="_blank">Llamar</a>'
-            )
-        return "—"
-
-    phone_link.short_description = "Teléfono"
-
-    
-    
-    
 @admin.register(DiagnosticoTecnico)
 class DiagnosticoAdmin(admin.ModelAdmin):
     list_display = ("lead", "error_type", "domain", "created_at")
     list_filter = ("error_type",)
+

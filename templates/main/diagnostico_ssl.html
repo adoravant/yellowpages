@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Reporte rápido — Estado SSL · {{domain}}</title>
+
+<style>
+  :root{
+    --bg:#f7f8fb;
+    --card:#ffffff;
+    --accent:#6b46c1;
+    --muted:#6b7280;
+    --danger:#b91c1c;
+    --line:#e5e7eb;
+  }
+
+  body{
+    font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto;
+    background:var(--bg);
+    margin:0;
+    color:#111;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container{
+    max-width:780px;
+    margin:32px auto;
+    padding:20px;
+  }
+
+  .card{
+    background:var(--card);
+    border-radius:12px;
+    padding:28px;
+    box-shadow:0 5px 16px rgba(20,20,20,.04);
+    border:1px solid var(--line);
+  }
+
+  header{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    margin-bottom:8px;
+  }
+
+  header img{
+    height:48px;
+    border-radius:8px;
+  }
+
+  h1{
+    font-size:20px;
+    margin:0;
+    font-weight:700;
+    color:var(--accent);
+  }
+
+  .meta{
+    color:var(--muted);
+    font-size:13px;
+    margin-top:4px;
+  }
+
+  .pill-danger{
+      background:#dc2626!important;
+      color:white!important;
+      padding:6px 12px;
+      border-radius:999px;
+      font-weight:600;
+      font-size:13px;
+      display:inline-block;
+  }
+
+  .small{
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.45;
+  }
+
+  h3,h4{
+    font-weight:600;
+    color:#333;
+  }
+
+  .impact{
+    background:#fff7f7;
+    border-left:4px solid var(--danger);
+    padding:12px 14px;
+    border-radius:8px;
+    margin-top:8px;
+  }
+
+  .cta{
+    display:flex;
+    gap:10px;
+    margin-top:18px;
+  }
+
+  .btn{
+    padding:10px 14px;
+    border-radius:8px;
+    background:var(--accent);
+    color:white;
+    text-decoration:none;
+    font-weight:600;
+    font-size:14px;
+  }
+
+  .btn-outline{
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--accent);
+  }
+
+  /* MINI TABLA (sidebar-style integrada) */
+  .mini-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:12px;
+    font-size:13px;
+  }
+
+  .mini-table td{
+    padding:6px 4px;
+    border-bottom:1px solid var(--line);
+    color:#444;
+  }
+
+  .mini-thumb{
+    width:100%;
+    border:1px solid #ccc;
+    border-radius:6px;
+    margin-top:12px;
+  }
+
+  /* Screenshot grande */
+  .screenshot-big{
+    width:100%;
+    max-width:780px;
+    border-radius:12px;
+    border:1px solid #ddd;
+    margin-top:12px;
+  }
+
+  footer{
+    margin-top:32px;
+    font-size:13px;
+    color:var(--muted);
+    line-height:1.4;
+    text-align:center;
+  }
+</style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="card">
+
+      <!-- HEADER -->
+	<header>
+	  <div style="display:flex; align-items:center; justify-content:space-between; width:100%;">
+	    <div style="display:flex; align-items:center; gap:16px;">
+	      <img src="{{your_logo_url}}" alt="Logo" style="height:48px; border-radius:8px;" />
+	      <div>
+		<h1>Diagnóstico rápido — Seguridad SSL</h1>
+		<div class="meta">
+		  Dominio: <strong>{{domain}}</strong> · Generado el {{report_date}}
+		</div>
+	      </div>
+	    </div>
+
+    <!-- ⭐ LOGO DEL CLIENTE A LA DERECHA -->
+    <img
+      src="https://www.guiacores.com.ar/admin/upload/registro/20220715153600_270x100.png"
+      alt="Logo del comercio"
+      style="height:100px; with:270px; border-radius:8px; margin-left:20px;"
+    />
+  </div>
+</header>
+
+
+      <!-- PILL -->
+      <div style="margin-top:14px;margin-bottom:6px;">
+        <span class="pill-danger">Alerta crítica</span>
+        <span class="small" style="margin-left:8px;">
+          Google bloquea y advierte a usuarios que su sitio es peligroso.
+        </span>
+      </div>
+
+      <!-- MINI TABLA (Sidebar compacta + mini screenshot) -->
+      <table class="mini-table">
+        <tr>
+          <td style="font-weight:600;">Dominio</td>
+          <td>{{domain}}</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">Fecha del análisis</td>
+          <td>{{report_date}}</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">Estado SSL</td>
+          <td style="color:#b91c1c;font-weight:600;">Crítico</td>
+        </tr>
+        <tr>
+          <td style="font-weight:600;">Tipo de falla</td>
+          <td>{{ssl_issue_type}}</td>
+        </tr>
+      </table>
+
+
+      <!-- MAIN CONTENT -->
+      <div class="section">
+        <h3>Resumen ejecutivo</h3>
+        <p class="small">
+          El acceso a <strong>{{domain}}</strong> es bloqueado automáticamente por el navegador debido a un problema crítico en el certificado.
+          Esto afecta consultas, ventas y reduce significativamente la confianza.
+        </p>
+      </div>
+	
+	      <img class="mini-thumb" src="yellowpages/screenshots/aislacionespatagonicas.com.ar.png" alt="Preview {{domain}}" />
+
+	
+	
+	
+      <div class="section">
+        <h4>Diagnóstico técnico</h4>
+        <ul class="small">
+          <li><strong>Tipo de error:</strong> {{ssl_issue_type}}</li>
+          <li><strong>Certificado válido desde:</strong> {{valid_from}}</li>
+          <li><strong>Válido hasta:</strong> {{valid_until}} (quedan {{days_left}} días)</li>
+          <li><strong>URL final detectada:</strong> {{final_url}}</li>
+        </ul>
+      </div>
+
+      <div class="section">
+        <h4>Impacto inmediato</h4>
+        <div class="impact small">
+          <ul style="margin-top:0;">
+            <li>Bloqueo visual que impide el acceso del usuario.</li>
+            <li>Pérdida de confianza y consultas.</li>
+            <li>Impacto directo en posicionamiento y SEO.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section">
+        <h4>Solución recomendada</h4>
+        <ol class="small">
+          <li>Renovar o reinstalar el certificado SSL.</li>
+          <li>Corregir cadena intermedia / CA.</li>
+          <li>Revisar configuración del servidor.</li>
+          <li>Aplicar HTTPS + HSTS.</li>
+        </ol>
+
+        <div class="cta">
+          <a class="btn" href="mailto:{{contact_email}}?subject=Revision%20SSL%20{{domain}}">
+            Solicitar revisión
+          </a>
+          <a class="btn btn-outline" href="tel:{{contact_phone}}">
+            Hablar ahora
+          </a>
+        </div>
+      </div>
+
+      <!-- 🔥 SCREENSHOT GRANDE ABAJO -->
+      <div class="section">
+        <h3>Screenshot del reporte automático</h3>
+        <p class="small">Captura tomada el {{screenshot_date}}</p>
+
+        <img
+          class="screenshot-big"
+          src="{{screenshot_path}}"
+          alt="Captura completa {{domain}}"
+        />
+      </div>
+
+      <footer>
+        Informe técnico automático · {{contact_name}} — {{contact_phone}} — {{contact_email}}
+      </footer>
+
+    </div>
+  </div>
+</body>
+</html>

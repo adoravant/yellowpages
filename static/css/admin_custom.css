@@ -1,0 +1,17 @@
+:root #changelist-filter {
+    flex: 0 0 150px !important;
+    width: 150px !important;
+}
+
+
+a.button {
+    display: inline-block;
+    margin: 2px 4px;
+    padding: 2px 6px;
+    background: #5b9bd5;
+    color: white !important;
+    text-decoration: none;
+    border-radius: 3px;
+    font-size: 11px;
+}
+
