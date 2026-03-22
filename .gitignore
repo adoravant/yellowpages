@@ -1,4 +1,24 @@
+# Entorno virtual
 venv/
-db.sqlite3
+
+# Backups y DB
 backups/
+db.sqlite3
+
+# Capturas de pantalla
+screenshots/
+
+# Python
 __pycache__/
+*.pyc
+
+# Drivers
+chromedriver
+
+# Entorno
+.env
+
+# Frontend
+node_modules/
+dist/
+build/
