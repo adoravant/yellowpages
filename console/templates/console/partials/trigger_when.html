@@ -1,0 +1,20 @@
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+    <div style="display:flex; flex-direction:column; gap:8px;">
+        <label class="field-label">NAME</label>
+        <input type="text" id="rule-name" placeholder="Ej: welcome_email"
+        value="{{ trigger.name|default:'' }}"
+        oninput="document.getElementById('display-name').innerText=this.value">
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:8px;">
+        <label class="field-label">EVENT</label>
+        <select id="event-type">
+            {% for event in event_types %}
+                <option value="{{ event.id }}"
+                    {% if trigger.event_type and trigger.event_type.id == event.id %}selected{% endif %}>
+                    {{ event.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+</div>

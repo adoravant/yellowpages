@@ -1,0 +1,13 @@
+Lo que sigue: El Flujo de Ejecución
+Para que esto cobre vida, vas a necesitar un "Dispatcher". La lógica sería algo así:
+
+Evento: Algo pasa (se crea un lead, se marca pain=True manualmente).
+
+Búsqueda: Buscas Triggers donde event_type coincida.
+
+Evaluación: Filtras por conditions (el evaluador que comentamos antes).
+
+Encolado: Creas objetos TaskQueue para cada Action del trigger, aplicando el delay_seconds.
+
+Una última sugerencia estética/funcional:
+En LEAD_STATUS, si bien está perfecto, podrías considerar agregar un estado "PAUSED" o "REJECTED" a futuro si ves que tu lista de LOST se vuelve una bolsa de gatos donde no distingues "no tiene plata" de "ya arregló el sitio". Pero para arrancar, la simplicidad de LOST es imbatible.

@@ -1,7 +1,8 @@
+#main.models
+
 from django.db import models
 from django.utils import timezone
 from django.core.validators import URLValidator
-
 
 
 
@@ -80,12 +81,10 @@ class LeadFull(models.Model):
 
     class Meta:
         ordering = ["id"]
+        verbose_name = "Lead"
 
     def __str__(self):
         return self.name or f"LeadFull #{self.pk}"
-        
-
-
 
 
 class DiagnosticoTecnico(models.Model):
@@ -120,4 +119,8 @@ class DiagnosticoTecnico(models.Model):
 
     def __str__(self):
         return f"{self.error_type} - {self.domain}"
-
+    
+    
+    class Meta:
+        ordering = ["id"]
+        verbose_name = "Diagnostico PDF"

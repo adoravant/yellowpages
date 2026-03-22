@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Flujo Objeciones CRM - Página Caída Color</title>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: true });
+</script>
+<style>
+  body {
+    background: #1e1e2f;
+    color: #f0f0f0;
+    font-family: Arial, sans-serif;
+    margin: 30px;
+  }
+  h1 { text-align: center; margin-bottom: 30px; }
+  .mermaid { margin: auto; max-width: 900px; }
+</style>
+</head>
+<body>
+
+<h1>Flujo de Objeciones CRM - Página Caída (Colores)</h1>
+
+<div class="mermaid">
+flowchart TB
+    %% Premisa inicial
+    Premisa[Premisa:<br/>"La página está caída → están perdiendo dinero"] 
+
+    %% Respuestas del cliente
+    Niega[Niega Pain:<br/>"No me importa, no estamos perdiendo dinero"]
+    O_Externa[Objeción Externa:<br/>"No tengo tiempo / ocupado / contexto externo"]
+    O_Interna[Objeción Interna:<br/>"No me cierra / duda personal"]
+    O_Autoridad[Objeción Autoridad:<br/>"Tengo que consultarlo con Pepe / jefe / proveedor"]
+
+    %% Pain siempre se dispara
+    Pain[Pain activado:<br/>Consecuencias negativas / urgencia]
+
+    %% Acción final
+    AccionQ[Acción Q:<br/>Reframe / Manejo de objeción / Propuesta]
+
+    %% Conexiones verticales
+    Premisa --> Niega --> Pain --> AccionQ
+    Premisa --> O_Externa --> Pain --> AccionQ
+    Premisa --> O_Interna --> Pain --> AccionQ
+    Premisa --> O_Autoridad --> Pain --> AccionQ
+
+    %% Explicación de flujo
+    Note[Nota: Aunque el cliente objete o niegue, la realidad (R) sigue existiendo.<br/>El Pain se activa siempre y se decide la acción final]
+    Premisa --> Note
+
+    %% Estilos de color
+    classDef premisa fill:#3b82f6,stroke:#fbbf24,color:#ffffff,stroke-width:3px,font-size:16px,font-weight:bold;
+    classDef respuesta fill:#f59e0b,stroke:#fbbf24,color:#ffffff,stroke-width:2px,font-size:14px;
+    classDef pain fill:#fbbf24,stroke:#f59e0b,color:#1e1e2f,stroke-width:3px,font-size:15px,font-weight:bold;
+    classDef accion fill:#22c55e,stroke:#fbbf24,color:#1e1e2f,stroke-width:3px,font-size:15px,font-weight:bold;
+    classDef nota fill:#6b7280,stroke:#64748b,color:#f1f5f9,stroke-width:1px,font-size:12px,font-style:italic;
+
+    class Premisa premisa;
+    class Niega,O_Externa,O_Interna,O_Autoridad respuesta;
+    class Pain pain;
+    class AccionQ accion;
+    class Note nota;
+</div>
+
+</body>
+</html>

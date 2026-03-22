@@ -1,0 +1,91 @@
+{% load static %}
+
+<section class="portfolio" id="matrix-section">
+    <div class="row mb-4">
+        <div class="col-lg-12 d-flex justify-content-center">
+            <ul id="portfolio-flters">
+                <li class="{% if progress.current_stage == 'VALIDATION' %}filter-active{% endif %}" data-filter=".filter-VALIDATION">Validation</li>
+                <li class="{% if progress.current_stage == 'PAIN' %}filter-active{% endif %}" data-filter=".filter-PAIN">Pain / Offer</li>
+                <li class="{% if progress.current_stage == 'CALL' %}filter-active{% endif %}" data-filter=".filter-CALL">Call / Meeting</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="row portfolio-container" id="matrix-wrapper">
+        
+        {% for scenario in scenarios %}
+        <div class="col-lg-12 portfolio-item filter-{{ scenario.stage }}">
+            <div class="panel">
+                <div class="panel-title">
+                    Tactical_Matrix // <small class="text-blue-400 font-mono">{{ scenario.stage }}</small>
+                </div>
+
+                <div class="excel-matrix">
+                    <div class="header-cell-lateral"><i data-lucide="trending-up"></i></div>
+                    {% for btn in scenario.get_grid.AVANCE %}
+                        {% if btn %}
+                        <button class="matrix-slot action-btn btn-avance" onclick="triggerMatrixAction(this, '{{ btn.id }}', '{{ btn.label }}')">
+                            <i data-lucide="{{ btn.icon|default:'arrow-up-right' }}"></i>
+                            <span>{{ btn.label }}</span>
+                        </button>
+                        {% else %}<div class="matrix-slot empty-slot"></div>{% endif %}
+                    {% endfor %}
+
+                    <div class="header-cell-lateral"><i data-lucide="pause-circle"></i></div>
+                    {% for btn in scenario.get_grid.STALL %}
+                        {% if btn %}
+                        <button class="matrix-slot action-btn btn-stall" onclick="triggerMatrixAction(this, '{{ btn.id }}', '{{ btn.label }}')">
+                            <i data-lucide="{{ btn.icon|default:'help-circle' }}"></i>
+                            <span>{{ btn.label }}</span>
+                        </button>
+                        {% else %}<div class="matrix-slot empty-slot"></div>{% endif %}
+                    {% endfor %}
+
+                    <div class="header-cell-lateral"><i data-lucide="x-octagon"></i></div>
+                    {% for btn in scenario.get_grid.CLOSE %}
+                        {% if btn %}
+                        <button class="matrix-slot action-btn btn-close" onclick="triggerMatrixAction(this, '{{ btn.id }}', '{{ btn.label }}')">
+                            <i data-lucide="{{ btn.icon|default:'trash-2' }}"></i>
+                            <span>{{ btn.label }}</span>
+                        </button>
+                        {% else %}<div class="matrix-slot empty-slot"></div>{% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</section>
+
+<script>
+    // Inicialización de Isotope para tu Matrix
+    document.addEventListener('DOMContentLoaded', function() {
+        var portfolioContainer = document.querySelector('.portfolio-container');
+        if (portfolioContainer) {
+            var portfolioIsotope = new Isotope(portfolioContainer, {
+                itemSelector: '.portfolio-item',
+                layoutMode: 'fitRows'
+            });
+
+            var portfolioFilters = document.querySelectorAll('#portfolio-flters li');
+            portfolioFilters.forEach(function(filter) {
+                filter.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    portfolioFilters.forEach(function(el) { el.classList.remove('filter-active'); });
+                    this.classList.add('filter-active');
+
+                    portfolioIsotope.arrange({
+                        filter: this.getAttribute('data-filter')
+                    });
+                });
+            });
+            
+            // Forzar el filtrado inicial según el stage del Lead
+            portfolioIsotope.arrange({
+                filter: '.filter-{{ progress.current_stage }}'
+            });
+        }
+    });
+</script>
+<script src="{% static 'console/js/matrix.js' %}"></script>

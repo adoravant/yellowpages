@@ -1,0 +1,45 @@
+{% load static %}
+<section id="matrix-section">
+
+    <div class="panel">
+        <div class="panel-title">
+            Tactical_Matrix // 
+            <small id="matrix-stage-label" class="text-blue-400 font-mono"></small>
+        </div>
+
+        <div class="excel-matrix" id="matrix"></div>
+    </div>
+
+</section>
+
+<script>
+window.MATRIX_DATA = {
+    {% for scenario in scenarios %}
+    "{{ scenario.stage }}": {
+        "AVANCE": [
+            {% for b in scenario.get_grid.AVANCE %}
+                {% if b %}
+                {id: "{{ b.id }}", label: "{{ b.label|escapejs }}", icon: "{{ b.icon|default:'arrow-up-right' }}"},
+                {% else %} null,{% endif %}
+            {% endfor %}
+        ],
+        "STALL": [
+            {% for b in scenario.get_grid.STALL %}
+                {% if b %}
+                {id: "{{ b.id }}", label: "{{ b.label|escapejs }}", icon: "{{ b.icon|default:'help-circle' }}"},
+                {% else %} null,{% endif %}
+            {% endfor %}
+        ],
+        "CLOSE": [
+            {% for b in scenario.get_grid.CLOSE %}
+                {% if b %}
+                {id: "{{ b.id }}", label: "{{ b.label|escapejs }}", icon: "{{ b.icon|default:'trash-2' }}"},
+                {% else %} null,{% endif %}
+            {% endfor %}
+        ]
+    },
+    {% endfor %}
+};
+</script>
+
+<script src="{% static 'console/js/matrix.js' %}"></script>

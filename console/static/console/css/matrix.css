@@ -1,0 +1,209 @@
+/* ================================
+   MATRIX CONTAINER
+================================ */
+.excel-matrix {
+    display: grid;
+    grid-template-columns: 40px repeat(3, 1fr);
+    grid-auto-rows: 1fr;
+    gap: 10px;
+
+    background: rgba(255,255,255,0.03);
+    backdrop-filter: blur(10px);
+
+    padding: 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.08);
+    flex: 1;
+    height: 100%;
+    min-height: 0;
+}
+
+
+/* asegura que el panel estire */
+.panel {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* el contenedor del matrix ocupa todo */
+#matrix-section {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* ================================
+   LATERAL ICONS
+================================ */
+.header-cell-lateral {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+
+    color: var(--muted);
+}
+
+.header-cell-lateral svg {
+    width: 16px !important;
+    height: 16px !important;
+    opacity: 0.5;
+}
+
+/* ================================
+   🔥 STAGE SWITCH (FIX)
+================================ */
+.header-cell-lateral.stage-switch {
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.header-cell-lateral.stage-switch:hover {
+    transform: scale(1.05);
+    border-color: rgba(255,255,255,0.2);
+}
+
+.header-cell-lateral.stage-switch:active {
+    transform: scale(0.95);
+}
+
+.header-cell-lateral.stage-switch.active {
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+}
+
+.header-cell-lateral.stage-switch.active svg {
+    opacity: 1;
+    color: var(--accent);
+}
+
+/* ================================
+   MATRIX BUTTON BASE
+================================ */
+.matrix-slot {
+    all: unset;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+    padding: 10px;
+
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    position: relative;
+}
+
+/* ICON */
+.matrix-slot i,
+.matrix-slot svg {
+    width: 16px !important;
+    height: 16px !important;
+    opacity: 0.8;
+}
+
+/* TEXT */
+.matrix-slot span {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    text-align: center;
+
+    color: var(--text);
+    opacity: 0.8;
+    letter-spacing: 0.5px;
+}
+
+/* ================================
+   HOVER / ACTIVE
+================================ */
+.matrix-slot:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.2);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+.matrix-slot:active {
+    transform: scale(0.96);
+}
+
+/* ================================
+   COLOR SYSTEM (SEMÁNTICO)
+================================ */
+
+/* 🔴 CLOSE → 1 2 3 */
+.btn-close {
+    background: rgba(239,68,68,0.08);
+    border-color: rgba(239,68,68,0.25);
+}
+.btn-close i { color: var(--red); }
+.btn-close:hover {
+    background: rgba(239,68,68,0.12);
+    border-color: var(--red);
+}
+
+/* 🟣 STALL → 4 5 6 */
+.btn-stall {
+    background: rgba(139,92,246,0.08);
+    border-color: rgba(139,92,246,0.25);
+}
+.btn-stall i { color: var(--violet); }
+.btn-stall:hover {
+    background: rgba(139,92,246,0.14);
+    border-color: var(--violet);
+}
+
+/* 🟢 AVANCE → 7 8 9 */
+.btn-avance {
+    background: rgba(34,197,94,0.08);
+    border-color: rgba(34,197,94,0.25);
+}
+.btn-avance i { color: var(--green); }
+.btn-avance:hover {
+    background: rgba(34,197,94,0.14);
+    border-color: var(--green);
+}
+
+/* ================================
+   EMPTY SLOT
+================================ */
+.empty-slot {
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 6px,
+        rgba(255,255,255,0.02) 6px,
+        rgba(255,255,255,0.02) 12px
+    );
+    border: 1px dashed rgba(255,255,255,0.06);
+    border-radius: 12px;
+}
+
+/* ================================
+   LOADING OVERLAY
+================================ */
+.loading-overlay {
+    position: absolute;
+    inset: 0;
+
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(3px);
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+}

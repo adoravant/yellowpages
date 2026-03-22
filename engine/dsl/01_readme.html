@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Rule Engine – Technical Overview</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: true });
+  </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      margin: 0;
+      padding: 40px;
+    }
+    h1 {
+      color: #f97316;
+      font-size: 3rem;
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    h2 {
+      color: #38bdf8;
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+    .container {
+      max-width: 1800px;
+      margin: auto;
+    }
+    .box {
+      background: #020617;
+      border: 1px solid #1e293b;
+      padding: 25px 30px;
+      border-radius: 10px;
+      margin-bottom: 25px;
+      width: 100%;
+    }
+    pre {
+      white-space: pre-wrap;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+    ul.inline-bullets {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    ul.inline-bullets li {
+      display: inline-block;
+      max-width: 300px; /* límite para no ocupar toda la pantalla */
+      vertical-align: top;
+      margin: 5px 15px 5px 0;
+      font-size: 0.95rem;
+      background: #1e293b;
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+    .mermaid {
+      max-width: 100%;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+<h1>Rule Engine – Technical Overview</h1>
+
+<div class="box">
+<h2>Execution Flow</h2>
+
+<div class="mermaid">
+flowchart TD
+
+%% --- Entrada: Reglas DSL ---
+A["<b>TriggerRule.conditions (JSON)</b><hr/>• left → variable<br/>• operator → operador<br/>• right → valor<br/>Ej: lead.country == 'Argentina'"]
+
+%% --- Resolución de variables ---
+B["<b>ContextResolver + CONTEXT_MAP</b><hr/>• Trae variables del contexto<br/>• Soporta subacceso con punto (dot notation)<br/>• Envuelve QuerySets con QueryWrapper<br/>• Variables calculadas: last_event, executed_actions"]
+
+%% --- Acceso a ORM / Datos ---
+C["<b>QueryWrapper</b><hr/>• Encapsula QuerySets<br/>• Métodos seguros: exists(), count(), first(), values_list()"]
+
+D["ORM Access<br/>• Acceso directo a modelos y atributos<br/>• Ej: lead.country, status.validated, last_event.event_type.slug"]
+
+%% --- Inferencia y operadores ---
+E["<b>Type Inference</b><hr/>• infer_type → detecta tipo automáticamente<br/>• str → text, int → number, bool → logic, list → list, queryset → queryset"]
+
+F["<b>Operators (TYPE_OPERATORS)</b><hr/>• Define qué operadores existen por tipo de variable<br/>• text → equals, contains...<br/>• number → gt, lt...<br/>• list / queryset → in, exists..."]
+
+%% --- Evaluación ---
+G["<b>ContextEvaluator</b><hr/>• Obtiene valor de variable con get()<br/>• Evalúa expresiones simples con eval_expr()<br/>• Devuelve True / False<br/>• Consulta tipos con variable_types()"]
+
+%% --- Resultado final ---
+H["Resultado Final<br/>• True / False<br/>• Se usa para disparar triggers, crear tasks, automatizar acciones"]
+
+%% --- Conexiones ---
+A --> B
+B --> C
+B --> D
+D --> B
+B --> E
+E --> F
+F --> G
+G --> H
+
+%% --- Estilos de nodos ---
+style A fill:#f472b6,stroke:#1f1f1f,stroke-width:2px,rx:5,ry:5,color:#e6e6e6
+style B fill:#306998,stroke:#1f1f1f,stroke-width:2px,rx:5,ry:5,color:#e6e6e6
+style C fill:#fcd440,stroke:#1f1f1f,stroke-width:2px,rx:5,ry:5,color:#000000
+style D fill:#2d2d2d,stroke:#1f1f1f,stroke-width:2px,rx:5,ry:5,color:#e2e2e2
+style E fill:#38bdf8,stroke:#1f1f1f,stroke-width:2px,rx:5,ry:5,color:#000000
+style F fill:#f97316,stroke:#1f1f1f,stroke-width:2px,rx:5,ry:5,color:#000000
+style G fill:#10b981,stroke:#1f1f1f,stroke-width:2px,rx:5,ry:5,color:#000000
+style H fill:#2d2d2d,stroke:#1f1f1f,stroke-width:2px,rx:5,ry:5,color:#e2e2e2
+</div>
+
+
+</div>
+
+<!-- Todo lo siguiente es texto debajo del gráfico con bullets inline legibles -->
+<div class="box">
+<h2>Core Components</h2>
+
+<ul class="inline-bullets">
+  <li>context_registry.py: define datos y objetos</li>
+  <li>resolver.py: convierte strings a valores reales</li>
+  <li>query_wrapper.py: limita operaciones sobre querysets</li>
+  <li>type_inference.py: detecta tipo automáticamente</li>
+  <li>operators.py: define operadores según tipo</li>
+  <li>evaluator.py: ejecuta comparación y devuelve True/False</li>
+</ul>
+</div>
+
+<div class="box">
+<h2>Access Patterns</h2>
+
+<ul class="inline-bullets">
+  <li>Direct ORM: lead.country, lead.progress.validated</li>
+  <li>Nested Relations: last_event.event_type.slug</li>
+  <li>Collections: event_slugs, executed_actions</li>
+  <li>QuerySets: events.exists(), tasks.count()</li>
+  <li>Rules Example: {"left": "lead.country", "operator": "equals", "right": "Argentina"}</li>
+</ul>
+</div>
+
+<div class="box">
+<h2>Conceptual Model</h2>
+
+<ul class="inline-bullets">
+  <li>resolver → trae datos reales</li>
+  <li>type → entiende tipo de cada dato</li>
+  <li>operators → define lógica aplicable</li>
+  <li>evaluator → ejecuta comparación y devuelve True/False</li>
+  <li>Resultado → sistema declarativo de automatización, reglas flexibles</li>
+</ul>
+</div>
+
+</div>
+</body>
+</html>

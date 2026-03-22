@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Diagrama de Pain CRM</title>
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true });
+</script>
+<style>
+  body {
+    background: #05070a;
+    color: #f1f5f9;
+    font-family: Arial, sans-serif;
+    margin: 30px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Flujo de Pain y Objeción</h1>
+
+<div class="mermaid">
+flowchart TD
+    %% Variables principales
+    R[Realidad inmutable (R)<br/>"La página está caída"]
+    O[Objeción del cliente (O)<br/>"No tengo dinero"]
+    P[Pain (P)<br/>Consecuencia inevitable]
+    Q[Acción posible (Q)<br/>"Eliminar R para resolver P"]
+
+    %% Flujo principal
+    R -->|Genera automáticamente| P
+    O -->|Intento de influir (no modifica R)| P
+    P -->|Se resuelve únicamente si| Q
+
+    %% Bot / sistema de decisión
+    checkO{¿O modifica R?}
+    O --> checkO
+    checkO -->|Sí| R
+    checkO -->|No| P
+
+    %% Nota con la fórmula
+    formula[Nota:<br/>(R + O) != ¬P | t]
+    formula --> P
+
+    %% Estilo
+    classDef varStyle fill:#0a0f1a,stroke:#fbbf24,color:#f1f5f9,stroke-width:2px,font-size:14px;
+    class R,O,P,Q,checkO,formula varStyle;
+</div>
+
+</body>
+</html>

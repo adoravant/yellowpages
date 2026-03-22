@@ -6,6 +6,7 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 from .models import LeadFull, DiagnosticoTecnico
+from sales.models import Event
 
 
 @admin.register(LeadFull)
@@ -20,10 +21,15 @@ class LeadFullAdmin(admin.ModelAdmin):
         "website_link",
         "website_status",
         "email",
-        "logo_url",
+        
     )
-
-    search_fields = (
+    class EventInline(admin.TabularInline):
+        model = Event
+        extra = 0
+        readonly_fields = ("tag", "channel", "metadata", "created_at")  # canal readonly
+        can_delete = False
+        ordering = ("-created_at",)
+        search_fields = (
         "name",
         "phone",
         "email",
@@ -31,7 +37,7 @@ class LeadFullAdmin(admin.ModelAdmin):
         "website_type",
         "whatsapp_url",
     )
-
+    #readonly_fields = ("tag", "channel", "metadata", "created_at")
     list_filter = ("website_status",)
 
     # ---- TELÉFONO ----
@@ -48,10 +54,10 @@ class LeadFullAdmin(admin.ModelAdmin):
         )
 
         return mark_safe(
-            f'<a href="tel:{phone}">📞 Llamar</a>'
+            f'<a style="font-size:15px" href="tel:{phone}">📞</a>'
         )
 
-    phone_link.short_description = "Teléfono"
+    phone_link.short_description = "llamar"
     phone_link.admin_order_field = "phone"
 
     # ---- WHATSAPP ----
@@ -60,10 +66,10 @@ class LeadFullAdmin(admin.ModelAdmin):
             return "—"
 
         return mark_safe(
-            f'<a href="{obj.whatsapp_url}" target="_blank">WhatsApp</a>'
+            f'<a href="{obj.whatsapp_url}" target="_blank">wsapp</a>'
         )
 
-    whatsapp_link.short_description = "WhatsApp"
+    whatsapp_link.short_description = "Whats"
     whatsapp_link.admin_order_field = "whatsapp_url"
 
     # ---- DETALLE URL ----
@@ -72,7 +78,7 @@ class LeadFullAdmin(admin.ModelAdmin):
             return "—"
 
         return mark_safe(
-            f'<a href="{obj.detalle_url}" target="_blank">Ver detalle</a>'
+            f'<a href="{obj.detalle_url}" target="_blank">cores</a>'
         )
 
     detalle_url_link.short_description = "Detalle"
@@ -84,7 +90,7 @@ class LeadFullAdmin(admin.ModelAdmin):
             return "—"
 
         return mark_safe(
-            f'<a href="{obj.website}" target="_blank">{obj.website}</a>'
+            f'<a href="{obj.website}" target="_blank">visitar</a>'
         )
 
     website_link.short_description = "Website"

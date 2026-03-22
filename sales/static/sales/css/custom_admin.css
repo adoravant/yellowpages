@@ -1,0 +1,12 @@
+.two-columns ul.models {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 0;
+}
+
+.two-columns li.model {
+    width: 48%;
+    margin-right: 2%;
+    margin-bottom: 2%;
+    box-sizing: border-box;
+}

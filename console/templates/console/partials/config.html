@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Event Engine | DNA Configurator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="{% static 'console/css/config.css' %}">
+    
+</head>
+<body>
+<aside class="sidebar">
+    {% for tab in tabs %}
+        <div class="tab-link {% if forloop.first %}active{% endif %}" onclick="showTab('{{ tab.key }}')">
+            <i data-lucide="{{ tab.icon }}"></i> {{ tab.name }}
+        </div>
+    {% endfor %}
+</aside>
+
+<main class="content">
+    <!-- <header class="header">
+        <h2 id="tab-title" style="color:#f2f2f2">{{ tabs.0.name|upper }}</h2>
+        <button class="save-btn" onclick="saveConfig()">GUARDAR</button>
+    </header> -->
+
+    <section class="editor-area">
+        <table class="config-table">
+            <thead>
+                <tr>
+                    <th>Event Slug</th>
+                    <th>Alert <i data-lucide="check-square" class="header-icon" onclick="toggleColumn('js-alert')"></i></th>
+                    <th>Priority</th>
+                    <th>Auto <i data-lucide="check-square" class="header-icon" onclick="toggleColumn('js-auto')"></i></th>
+                    <th>Max Consumes</th>
+                    <th>Active <i data-lucide="check-square" class="header-icon" onclick="toggleColumn('js-active')"></i></th>
+                </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
+    </section>
+</main>
+
+<script>
+    const configData = {{ matrix_data_json|safe }};
+    const tabs = {{ tabs|safe }};
+    const saveUrl = "{% url 'console:event_dna_configurator' %}";
+    const csrfToken = "{{ csrf_token }}";
+</script>
+
+<script src="{% static 'console/js/config.js' %}"></script>
+
+
+</body>
+</html>

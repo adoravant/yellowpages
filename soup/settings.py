@@ -28,19 +28,108 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+JAZZMIN_UI_TWEAKS = {
+
+    "theme": "materia",
+    
+}
+
+
+JAZZMIN_SETTINGS = {
+
+
+    "order_with_respect_to": [
+
+            "main",
+
+            "engine",
+            "engine.eventtypeconfig",
+            "engine.actiontypeconfig",
+            "engine.msgtemplate",
+            "engine.triggerrule",
+
+            "sales",
+            "sales.task",
+            "sales.event",
+            "sales.alert",
+            "sales.leadprogress",
+            "sales.note",
+            "auth",
+        ],
+    # ------------------------------------------------
+    # BRANDING
+    # ------------------------------------------------
+    "site_title": "PYTHARG Admin",
+    "site_header": "PYTHARG ADMIN",
+    "site_brand": "PYTHARG",
+
+    "icons": {
+
+        # AUTH
+        "auth.user": "fas fa-user",
+        "auth.group": "fas fa-users",
+
+        # MAIN
+        "main.leadfull": "fas fa-building",
+        "main.diagnosticotecnico": "fas fa-stethoscope",
+
+        # SALES
+        "sales.alert": "fas fa-bell",
+        "sales.event": "fas fa-calendar",
+        "sales.note": "fas fa-comment",
+        "sales.leadprogress": "fas fa-chart-line",
+        "sales.task": "fas fa-user-check",
+        
+        "engine.msgtemplate": "fas fa-sticky-note",
+        "engine.triggerrule": "fas fa-play",
+        "engine.eventtypeconfig": "fas fa-gear",
+        "engine.actiontypeconfig": "fas fa-bolt",
+        
+    }
+}
+# default
+# cerulean
+# cosmo
+# cyborg
+# darkly
+# flatly
+# journal
+# litera
+# lumen
+# lux
+# materia
+# minty
+# pulse
+# sandstone
+# simplex
+# sketchy
+# slate
+# solar
+# spacelab
+# superhero
+# united
+# yeti
+
+
+
 
 # Application definition
 
 INSTALLED_APPS = [
+    # "jazzmin",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "engine",
     "main",
-    "funnels",
+    #"funnels",
     #"msg"
+    "sales",
+    
+    "console",
     
 ]
 
@@ -59,7 +148,7 @@ ROOT_URLCONF = 'soup.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ BASE_DIR / "templates" ],
+        'DIRS': [BASE_DIR / 'templates'],  # <-- tu carpeta global
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

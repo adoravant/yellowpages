@@ -1,0 +1,41 @@
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+    <div style="display:flex; flex-direction:column; gap:8px;">
+        <label class="field-label">ACTION</label>
+        <select id="action-to-trigger">
+            {% for action in actions %}
+                <option value="{{ action.id }}"
+                    {% if trigger.action_to_trigger and trigger.action_to_trigger.id == action.id %}selected{% endif %}>
+                    {{ action.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:8px;">
+        <label class="field-label">TEMPLATE</label>
+        <select id="msg-template">
+            <option value="">None</option>
+            {% for tpl in templates %}
+                <option value="{{ tpl.id }}"
+                    {% if trigger.template and trigger.template.id == tpl.id %}selected{% endif %}>
+                    {{ tpl.slug }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:8px; grid-column:span 2;">
+        <label class="field-label">PRIORITY</label>
+        <select id="rule-priority">
+            <option value="high" {% if trigger.priority == 'high' %}selected{% endif %}>High</option>
+            <option value="mid" {% if trigger.priority == 'mid' or trigger.priority is none %}selected{% endif %}>Medium</option>
+            <option value="low" {% if trigger.priority == 'low' %}selected{% endif %}>Low</option>
+        </select>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:8px; grid-column:span 2;">
+        <label class="field-label">INTERNAL NOTES</label>
+        <textarea id="rule-notes" rows="3"
+            style="background:#0f172a; border:1px solid #1e293b; color:white; border-radius:4px; padding:10px;">{{ trigger.notes|default:'' }}</textarea>
+    </div>
+</div>

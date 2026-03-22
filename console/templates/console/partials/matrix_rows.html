@@ -1,0 +1,42 @@
+<div id="matrix-body" style="display: contents;">
+
+    <!-- AVANCE -->
+    <div class="header-cell-lateral"><i data-lucide="clock"></i></div>
+    {% for btn in scenario.get_grid.AVANCE %}
+        {% if btn %}
+        <button class="matrix-slot btn-avance" data-id="{{ btn.id }}" title="{{ btn.label }}">
+            <i data-lucide="{{ btn.icon|default:'arrow-up-right' }}"></i>
+            <span>{{ btn.label }}</span>
+        </button>
+        {% else %}
+        <div class="matrix-slot empty-slot"></div>
+        {% endif %}
+    {% endfor %}
+
+    <!-- STALL -->
+    <div class="header-cell-lateral"><i data-lucide="search"></i></div>
+    {% for btn in scenario.get_grid.STALL %}
+        {% if btn %}
+        <button class="matrix-slot btn-stall" data-id="{{ btn.id }}" title="{{ btn.label }}">
+            <i data-lucide="{{ btn.icon|default:'help-circle' }}"></i>
+            <span>{{ btn.label }}</span>
+        </button>
+        {% else %}
+        <div class="matrix-slot empty-slot"></div>
+        {% endif %}
+    {% endfor %}
+
+    <!-- CLOSE -->
+    <div class="header-cell-lateral"><i data-lucide="x-circle"></i></div>
+    {% for btn in scenario.get_grid.CLOSE %}
+        {% if btn %}
+        <button class="matrix-slot btn-close" data-id="{{ btn.id }}" title="{{ btn.label }}">
+            <i data-lucide="{{ btn.icon|default:'trash-2' }}"></i>
+            <span>{{ btn.label }}</span>
+        </button>
+        {% else %}
+        <div class="matrix-slot empty-slot"></div>
+        {% endif %}
+    {% endfor %}
+
+</div>

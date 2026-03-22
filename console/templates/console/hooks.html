@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consola Táctica - Asedio Digital</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({startOnLoad:true, theme:'dark'});</script>
+    
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f1f5f9;
+            --text-dim: #94a3b8;
+            --accent-ego: #f59e0b;
+            --accent-money: #10b981;
+            --accent-control: #3b82f6;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 { margin-bottom: 5px; color: #fff; }
+        header p { color: var(--text-dim); margin-top: 0; }
+
+        /* --- DIAGRAMA MERMAID --- */
+        .diagram-section {
+            background: #111827;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border);
+        }
+
+        /* --- CONSOLA DE BOTONES --- */
+        .matrix-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .strategy-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .strategy-card:hover {
+            transform: translateY(-5px);
+            border-color: #475569;
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .icon-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 10px;
+        }
+
+        /* Colores por Gatillo */
+        .ego .icon-circle { background: rgba(245, 158, 11, 0.1); color: var(--accent-ego); border: 1px solid var(--accent-ego); }
+        .money .icon-circle { background: rgba(16, 185, 129, 0.1); color: var(--accent-money); border: 1px solid var(--accent-money); }
+        .control .icon-circle { background: rgba(59, 130, 246, 0.1); color: var(--accent-control); border: 1px solid var(--accent-control); }
+
+        .btn-hook {
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            color: white;
+            margin-bottom: 20px;
+            transition: filter 0.2s;
+        }
+
+        .ego .btn-hook { background: var(--accent-ego); }
+        .money .btn-hook { background: var(--accent-money); }
+        .control .btn-hook { background: var(--accent-control); }
+        .btn-hook:hover { filter: brightness(1.2); }
+
+        /* --- DRILLING / AUTOMATION STEPS --- */
+        .dripping-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            border-top: 1px solid var(--border);
+            padding-top: 15px;
+        }
+
+        .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        .time-badge {
+            background: #0f172a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: var(--text-dim);
+            font-family: monospace;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .step-content strong { display: block; color: #fff; margin-bottom: 2px; }
+        .step-content span { color: var(--text-dim); line-height: 1.4; }
+
+        .badge-resource {
+            display: inline-block;
+            margin-top: 5px;
+            padding: 2px 6px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 4px;
+            font-size: 10px;
+            color: #cbd5e1;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Consola Táctica: Stage 1 & Dripping</h1>
+        <p>Selecciona el Hook inicial según el rubro. Los seguimientos se programan automáticamente.</p>
+    </header>
+
+    <section class="diagram-section">
+        <div class="mermaid">
+            graph LR
+                %% Estilos
+                classDef win fill:#f0f,stroke:#fff,stroke-width:2px,color:#fff;
+                classDef step fill:#1e293b,stroke:#334155,color:#cbd5e1;
+
+                Start((Lead Down)) --> Rubro{Rubro?}
+                
+                Rubro -- "Estética/Gast." --> Ego[Hook: EGO]
+                Rubro -- "Servicios/Rep." --> Money[Hook: DINERO]
+                Rubro -- "Industria/B2B" --> Control[Hook: CONTROL]
+
+                %% Progresión Ego
+                Ego --> R1[T+4h: DOTLIST] --> F1[T+24h: WINK Competencia]
+                
+                %% Progresión Dinero
+                Money --> R2[T+4h: SCREENSHOT] --> F2[T+24h: REGALO LEADS]
+                
+                %% Progresión Control
+                Control --> R3[T+4h: AUDITORIA] --> F3[T+24h: RIESGO MARCA]
+
+                F1 & F2 & F3 --> End((Life Deleted))
+                Ego & Money & Control & R1 & R2 & R3 -.-> |Responde| Cierre((CIERRE/CALL)):::win
+                
+                class R1,R2,R3,F1,F2,F3 step;
+        </div>
+    </section>
+
+    <div class="matrix-container">
+        
+        <div class="strategy-card ego">
+            <div class="card-header">
+                <div class="icon-circle">👤</div>
+                <h3>Gatillo: EGO</h3>
+                <p style="font-size: 12px; color: var(--text-dim);">Enfoque: Estatus y Orgullo</p>
+            </div>
+            <button class="btn-hook" onclick="alert('Hook EGO enviado!')">
+                DISPARAR HOOK
+            </button>
+            <ul class="dripping-list">
+                <li class="step">
+                    <div class="time-badge">T+0</div>
+                    <div class="step-content">
+                        <strong>Hook "Único Offline"</strong>
+                        <span>"Sos el único de tu rubro con la persiana digital baja."</span>
+                    </div>
+                </li>
+                <li class="step">
+                    <div class="time-badge">T+4h</div>
+                    <div class="step-content">
+                        <strong>Resource: El Dotlist</strong>
+                        <span>Envío de mapa visual con competencia en verde vs él en rojo.</span>
+                        <div class="badge-resource">📄 DOTLIST.JPG</div>
+                    </div>
+                </li>
+                <li class="step">
+                    <div class="time-badge">T+24h</div>
+                    <div class="step-content">
+                        <strong>Wink: Comparativa</strong>
+                        <span>"García ya arregló el suyo, ¿por qué vos no?"</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="strategy-card money">
+            <div class="card-header">
+                <div class="icon-circle">💰</div>
+                <h3>Gatillo: DINERO</h3>
+                <p style="font-size: 12px; color: var(--text-dim);">Enfoque: Lucro Cesante</p>
+            </div>
+            <button class="btn-hook" onclick="alert('Hook DINERO enviado!')">
+                DISPARAR HOOK
+            </button>
+            <ul class="dripping-list">
+                <li class="step">
+                    <div class="time-badge">T+0</div>
+                    <div class="step-content">
+                        <strong>Hook "Fuga de Ventas"</strong>
+                        <span>"Tu web deriva clientes a la competencia sin avisarte."</span>
+                    </div>
+                </li>
+                <li class="step">
+                    <div class="time-badge">T+4h</div>
+                    <div class="step-content">
+                        <strong>Resource: Screenshot</strong>
+                        <span>Captura de Google mostrando 'Sitio no seguro'.</span>
+                        <div class="badge-resource">🖼 GOOGLE_FAIL.PNG</div>
+                    </div>
+                </li>
+                <li class="step">
+                    <div class="time-badge">T+24h</div>
+                    <div class="step-content">
+                        <strong>Wink: Los Leads</strong>
+                        <span>"Llamá a estos a mano para no perder el día de ventas."</span>
+                        <div class="badge-resource">📋 LISTA_LEADS.PDF</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="strategy-card control">
+            <div class="card-header">
+                <div class="icon-circle">⚙️</div>
+                <h3>Gatillo: GESTIÓN</h3>
+                <p style="font-size: 12px; color: var(--text-dim);">Enfoque: Riesgo e Infra</p>
+            </div>
+            <button class="btn-hook" onclick="alert('Hook GESTIÓN enviado!')">
+                DISPARAR HOOK
+            </button>
+            <ul class="dripping-list">
+                <li class="step">
+                    <div class="time-badge">T+0</div>
+                    <div class="step-content">
+                        <strong>Hook "Acefalía Digital"</strong>
+                        <span>"Falta de gestión trivial en tu dominio. Riesgo de marca."</span>
+                    </div>
+                </li>
+                <li class="step">
+                    <div class="time-badge">T+4h</div>
+                    <div class="step-content">
+                        <strong>Resource: Auditoría</strong>
+                        <span>Informe técnico oficial de abandono de infraestructura.</span>
+                        <div class="badge-resource">📑 AUDITORIA_TECH.PDF</div>
+                    </div>
+                </li>
+                <li class="step">
+                    <div class="time-badge">T+24h</div>
+                    <div class="step-content">
+                        <strong>Wink: Despedida</strong>
+                        <span>"Evidentemente no hay nadie a cargo. Me rindo."</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function sendAttack(type) {
+        console.log("Iniciando secuencia de asedio para: " + type);
+        // Aquí iría tu fetch('/api/disparar-hook/')
+    }
+</script>
+
+</body>
+</html>

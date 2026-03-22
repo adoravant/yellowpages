@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Engine Architecture - Blueprint</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --matrix-green: #00ff41;
+            --accent-blue: #58a6ff;
+            --border-color: #30363d;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--matrix-green);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+        }
+
+        h1 { font-family: 'Fira Code', monospace; color: var(--matrix-green); margin: 0; }
+        p.subtitle { color: var(--text-secondary); font-size: 0.9em; }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .section {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .mermaid {
+            background: white; /* Mermaid se ve mejor en blanco si no se configura el dark */
+            border-radius: 4px;
+            padding: 10px;
+            margin: 20px 0;
+        }
+
+        .grid-docs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .doc-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--accent-blue);
+            padding: 15px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .doc-card h3 {
+            margin-top: 0;
+            color: var(--accent-blue);
+            font-family: 'Fira Code', monospace;
+            font-size: 1.1em;
+        }
+
+        .doc-card ul {
+            padding-left: 20px;
+            font-size: 0.85em;
+            color: var(--text-secondary);
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            background: #21262d;
+            padding: 2px 4px;
+            border-radius: 4px;
+            color: #ff7b72;
+        }
+
+        .tag {
+            font-size: 0.7em;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 10px;
+            background: var(--matrix-green);
+            color: black;
+            font-weight: bold;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>MATRIX ENGINE v3.0</h1>
+    <p class="subtitle">Arquitectura de Etapas, Eventos y Tareas Quirúrgicas</p>
+</header>
+
+<div class="container">
+    
+    <div class="section">
+        <h2 style="color: var(--matrix-green); font-family: 'Fira Code';">1. Flujo de Ejecución (Action Pipeline)</h2>
+        <div class="mermaid">
+            graph TD
+            subgraph Frontend_HTMX
+                UI[Usuario click Botón Matrix] -->|POST slug| CTRL[trigger_event_view]
+            end
+
+            subgraph Matrix_Core
+                CTRL -->|Instancia| MR[MatrixResolver]
+                MR -->|Crea| EV[Event]
+                EV -->|Informa| LP[LeadProgress]
+                LP -->|sync_from_event| LP
+                LP -.->|Actualiza| M_CTX[milestones_context JSON]
+                LP -.->|Cambia| STG[current_stage]
+            end
+
+            subgraph Engine_Automator
+                EV -->|Signal/Service| TR[TriggerRule Check]
+                TR -->|is_consumable?| TR
+                TR -->|Busca Template| MT[MsgTemplate]
+                MT -->|Filtra por Segmento| MT
+                TR -->|Crea| TK[Task]
+            end
+
+            subgraph Worker
+                TK -->|execute| FN[FUNCTIONS_AVAILABLE]
+                FN -->|Update Status| TK
+            end
+
+            style UI fill:#d4f1f9,stroke:#005a71
+            style MR fill:#c2f0c2,stroke:#2d5a2d
+            style LP fill:#f9d5e5,stroke:#a64d79
+            style TK fill:#fff2cc,stroke:#d6b656
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 style="color: var(--accent-blue); font-family: 'Fira Code';">2. Diccionario de Componentes</h2>
+        <div class="grid-docs">
+            
+            <div class="doc-card">
+                <h3>LeadProgress <span class="tag">State Machine</span></h3>
+                <ul>
+                    <li><b>validated...contract:</b> Booleanos persistentes (Hitos).</li>
+                    <li><code>milestones_context</code>: Historial detallado (Flavor/Timestamp).</li>
+                    <li><code>sync_from_event()</code>: Inteligencia de cascada (Si es Call, entonces Validated=True).</li>
+                    <li><code>current_stage</code>: Define qué botones ve el técnico en la UI.</li>
+                </ul>
+            </div>
+
+            <div class="doc-card">
+                <h3>Event <span class="tag">Fact</span></h3>
+                <ul>
+                    <li>Registro inmutable de "algo que pasó".</li>
+                    <li><code>metadata</code>: Guarda el <code>button_id</code> y el <code>technician</code>.</li>
+                    <li>Es el disparador para que el <b>TriggerRule</b> genere trabajo.</li>
+                </ul>
+            </div>
+
+            <div class="doc-card" style="border-left-color: #d6b656;">
+                <h3>Task <span class="tag">Execution</span></h3>
+                <ul>
+                    <li>La unidad mínima de trabajo (Ej: "Mandar WA").</li>
+                    <li><code>execute_at</code>: Permite programar seguimiento futuro.</li>
+                    <li><code>retry_count</code>: Manejo de errores de API.</li>
+                    <li><code>payload</code>: Contexto dinámico para la función Python.</li>
+                </ul>
+            </div>
+
+            <div class="doc-card" style="border-left-color: var(--matrix-green);">
+                <h3>TriggerRule <span class="tag">Logic</span></h3>
+                <ul>
+                    <li>El cerebro de automatización (IF Event X THEN Action Y).</li>
+                    <li><code>create_task_for_lead</code>: Lógica quirúrgica para elegir el <b>MsgTemplate</b> según el problema de la web.</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 style="color: #ff7b72; font-family: 'Fira Code';">3. La Regla Quirúrgica (Template Selection)</h2>
+        <p style="font-size: 0.85em;">Cuando el técnico aprieta <code>intent_pain_adv_money</code>, el sistema busca:</p>
+        <div class="mermaid">
+            graph LR
+            A[Button Slug] --> B{Template Search}
+            B -->|Match 1| C[Slug + Segmento Lead]
+            B -->|Match 2| D[Slug + Segmento NULL]
+            B -->|Match 3| E[Rule Default Template]
+            C --> F[TASK CREATED]
+            D --> F
+            E --> F
+        </div>
+    </div>
+
+</div>
+
+<script>
+    mermaid.initialize({ 
+        startOnLoad: true,
+        theme: 'default',
+        securityLevel: 'loose',
+        flowchart: { useMaxWidth: true, htmlLabels: true }
+    });
+</script>
+
+</body>
+</html>

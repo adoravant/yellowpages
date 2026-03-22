@@ -1,0 +1,39 @@
+{% load static %}
+<div class="panel">
+
+<div class="panel-title">Tactical_Matrix</div>
+
+<div class="excel-matrix">
+    <div></div>
+
+    <div class="header-cell ic-profile" title="Perfil"><i class="bi bi-person-check"></i></div>
+    <div class="header-cell ic-pain" title="Dolor"><i class="bi bi-emoji-frown"></i></div>
+    <div class="header-cell ic-hook" title="Hook"><i class="bi bi-lightning-charge"></i></div>
+
+    <div class="header-cell ic-time"><i class="bi bi-clock"></i></div>
+    {% for btn in scenario.get_grid.AVANCE %}
+        <button class="action-btn" onclick="triggerMatrixAction('{{ btn.id }}')" title="{{ btn.label }}">
+            {% if btn.icon %}<i class="bi bi-{{ btn.icon }}"></i>{% endif %}
+            <span>{{ btn.label|default:"---" }}</span>
+        </button>
+    {% endfor %}
+
+    <div class="header-cell ic-search"><i class="bi bi-search"></i></div>
+    {% for btn in scenario.get_grid.STALL %}
+        <button class="action-btn" onclick="triggerMatrixAction('{{ btn.id }}')" title="{{ btn.label }}">
+            {% if btn.icon %}<i class="bi bi-{{ btn.icon }}"></i>{% endif %}
+            <span>{{ btn.label|default:"---" }}</span>
+        </button>
+    {% endfor %}
+
+    <div class="header-cell ic-kill"><i class="bi bi-x-circle"></i></div>
+    {% for btn in scenario.get_grid.CLOSE %}
+        <button class="action-btn" onclick="triggerMatrixAction('{{ btn.id }}')" title="{{ btn.label }}">
+            {% if btn.icon %}<i class="bi bi-{{ btn.icon }}"></i>{% endif %}
+            <span>{{ btn.label|default:"---" }}</span>
+        </button>
+    {% endfor %}
+</div>
+
+
+</div>

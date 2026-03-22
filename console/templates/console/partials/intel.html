@@ -1,0 +1,38 @@
+{% load static %}
+<div class="panel lead-intel-panel">
+    <div class="panel-title">
+        <i class="bi bi-radar"></i> Lead_Intelligence
+    </div>
+
+    <div id="infoContent" class="info-pane-container">
+        <div class="pane-content" data-pane="chats">
+            <div class="ui-item">Zapatería López <span class="ui-badge success float-end">WA</span></div>
+            <div class="ui-item">Panadería Centro <span class="ui-badge muted float-end">WEB</span></div>
+        </div>
+
+        <div class="pane-content d-none" data-pane="files">
+            <div class="ui-item"><i class="bi bi-file-earmark-code"></i> diagnostico_web.json</div>
+            <div class="ui-item"><i class="bi bi-file-pdf"></i> propuesta_comercial.pdf</div>
+        </div>
+
+        <div class="pane-content d-none" data-pane="milestones">
+            <div class="ui-item text-accent">✓ Lead detectado</div>
+            <div class="ui-item text-muted">○ Primer contacto</div>
+        </div>
+
+        <div class="pane-content d-none" data-pane="intel">
+            <div class="ui-item">STACK: WordPress / WooCommerce</div>
+            <div class="ui-item">PAIN: Carga lenta en móvil</div>
+        </div>
+    </div>
+
+    <div id="filterContainer" class="filter-row">
+        </div>
+
+    <div class="tabs-bottom-container">
+        <button class="tab-btn active" onclick="switchPane(this, 'chats')">Chats</button>
+        <button class="tab-btn" onclick="switchPane(this, 'files')">Files</button>
+        <button class="tab-btn" onclick="switchPane(this, 'milestones')">Goals</button>
+        <button class="tab-btn" onclick="switchPane(this, 'intel')">Intel</button>
+    </div>
+</div>

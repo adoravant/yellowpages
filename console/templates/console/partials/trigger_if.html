@@ -1,0 +1,39 @@
+{# templates/console/partials/trigger_if.html #}
+<div class="dna-workspace">
+
+    <!-- Builder Canvas -->
+    <div class="dna-builder">
+        <div id="builder-canvas"></div>
+    </div>
+    
+    <!-- Visual / Logic Output -->
+    <div class="dna-visual">
+    <div class="dna-card">
+        <div class="dna-card-header">
+            <span>LOGIC PATH & VISUAL</span>
+        </div>
+
+        <div class="dna-card-content">
+            <!-- lógica legible -->
+            <div class="logic-output-container">
+                <pre id="logic-output"></pre>
+            </div>
+
+            <!-- Mermaid chart -->
+            <div id="mermaid-chart" class="mermaid-container"></div>
+                </div>
+            </div>
+        </div>
+
+    <!-- JSON Panel -->
+    <div class="dna-panels">
+        <div class="dna-card">
+            <div class="dna-card-header" style="display:flex; align-items:center; gap:12px;">
+                <span>JSON SCHEMA</span>
+                <button id="copy-json-btn" class="btn-accent">COPY</button>
+            </div>
+            <pre id="json-output" contenteditable="false"></pre>
+        </div>
+    </div>
+
+</div>

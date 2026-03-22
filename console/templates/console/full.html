@@ -1,0 +1,195 @@
+<div class="panel">
+
+
+<div class="panel-title">Comms_Center</div>
+
+<div class="chat" id="chat">
+    <div class="msg client">¿Cuánto demora el arreglo?</div>
+    <div class="msg agent">Si es solo el SSL, en 15 minutos estamos online.</div>
+</div>
+
+<div class="d-flex gap-2 mt-2">
+    <input id="msgInput" class="input-custom flex-grow-1" placeholder="Enviar comando...">
+    <button class="btn btn-warning btn-sm" onclick="sendMessage()">
+        <i class="bi bi-send-fill"></i>
+    </button>
+</div>
+
+
+</div>
+<div class="panel">
+
+
+<div class="panel-title">Lead_Intelligence</div>
+
+<div id="infoContent" class="info-pane">
+
+    <div class="pane-content" data-pane="chats">
+        <div class="pane-item">Zapatería López <span class="badge bg-success float-end">WA</span></div>
+        <div class="pane-item">Panadería Centro <span class="badge bg-secondary float-end">WEB</span></div>
+    </div>
+
+    <div class="pane-content d-none" data-pane="files">
+        <div class="pane-item"><i class="bi bi-file-pdf"></i> diagnostico_web.pdf</div>
+    </div>
+
+    <div class="pane-content d-none" data-pane="milestones">
+        <div class="pane-item text-success">✓ Lead detectado</div>
+    </div>
+
+    <div class="pane-content d-none" data-pane="intel">
+        <div class="pane-item">CMS: WordPress</div>
+    </div>
+
+</div>
+
+<div id="filterContainer" class="filter-row mt-2"></div>
+
+<div class="d-flex gap-1 pt-1">
+    <button class="tab-btn active" onclick="switchPane(this, 'chats')">Chats</button>
+    <button class="tab-btn" onclick="switchPane(this, 'files')">Files</button>
+    <button class="tab-btn" onclick="switchPane(this, 'milestones')">Goals</button>
+    <button class="tab-btn" onclick="switchPane(this, 'intel')">Intel</button>
+</div>
+
+
+</div>
+<div class="panel">
+
+    <div class="panel-title">Mission_Log</div>
+
+    <div class="note-input d-flex gap-2 mb-2">
+        <input id="noteInput" class="input-custom flex-grow-1" placeholder="Add entry...">
+        <button class="btn btn-dark btn-sm" onclick="addNote()">
+            <i class="bi bi-plus"></i>
+        </button>
+    </div>
+
+    <div id="notes" class="flex-grow-1 overflow-auto">
+        <div class="note"><b>14:10</b> - Lead caliente por caída de sitio.</div>
+    </div>
+
+    <div class="d-flex gap-2 mt-2">
+
+        <div class="d-flex gap-1" style="width:70%">
+
+            <!-- VALIDATION -->
+            <div class="header-cell ic-profile flex-fill" onclick="toggleDiag(this)" title="Validate">
+                <i class="bi bi-person-check"></i>
+            </div>
+
+            <!-- PAIN -->
+            <div class="header-cell ic-pain flex-fill" onclick="toggleDiag(this)" title="Pain">
+                <i class="bi bi-emoji-frown"></i>
+            </div>
+
+            <!-- INTEREST -->
+            <div class="header-cell flex-fill" onclick="toggleDiag(this)" title="Interest">
+                <i class="bi bi-lightbulb"></i>
+            </div>
+
+            <!-- CAPACITY / MONEY -->
+            <div class="header-cell flex-fill" onclick="toggleDiag(this)" title="Capacity / Money">
+                <i class="bi bi-cash-stack"></i>
+            </div>
+
+            <!-- OFFER -->
+            <div class="header-cell ic-hook flex-fill" onclick="toggleDiag(this)" title="Offer">
+                <i class="bi bi-lightning-charge"></i>
+            </div>
+
+            <!-- CALL -->
+            <div class="header-cell ic-time flex-fill" onclick="toggleDiag(this)" title="Call">
+                <i class="bi bi-telephone"></i>
+            </div>
+
+            <!-- MEET -->
+            <div class="header-cell flex-fill" onclick="toggleDiag(this)" title="Meet">
+                <i class="bi bi-camera-video"></i>
+            </div>
+
+            <!-- QUOTE -->
+            <div class="header-cell flex-fill" onclick="toggleDiag(this)" title="Quote">
+                <i class="bi bi-currency-dollar"></i>
+            </div>
+
+            <!-- CONTRACT -->
+            <div class="header-cell flex-fill" onclick="toggleDiag(this)" title="Contract">
+                <i class="bi bi-file-earmark-text"></i>
+            </div>
+
+        </div>
+
+        <button class="btn btn-main" style="width:30%" onclick="location.reload()">
+            SAVE
+        </button>
+
+    </div>
+
+</div>
+
+<div class="panel">
+
+<div class="panel-title">Tactical_Matrix</div>
+
+<div class="excel-matrix">
+
+    <div></div>
+
+    <div class="header-cell ic-profile" onclick="toggleDiag(this)" title="Perfil">
+        <i class="bi bi-person-check"></i>
+    </div>
+
+    <div class="header-cell ic-pain" onclick="toggleDiag(this)" title="Dolor">
+        <i class="bi bi-emoji-frown"></i>
+    </div>
+
+    <div class="header-cell ic-hook" onclick="toggleDiag(this)" title="Hook">
+        <i class="bi bi-lightning-charge"></i>
+    </div>
+
+    <div class="dropend">
+        <div class="header-cell ic-time" data-bs-toggle="dropdown">
+            <i class="bi bi-clock"></i>
+        </div>
+        <ul class="dropdown-menu dropdown-menu-dark">
+            <li><a class="dropdown-item" href="#">Tomorrow</a></li>
+        </ul>
+    </div>
+
+    <button class="action-btn" onclick="addMsg('agent','Hook salida')">Hook salida</button>
+    <button class="action-btn" onclick="addMsg('agent','Check pain')">Check pain</button>
+    <button class="action-btn" onclick="addMsg('agent','Enviar oferta')">Enviar oferta</button>
+
+    <div class="dropend">
+        <div class="header-cell ic-search" data-bs-toggle="dropdown">
+            <i class="bi bi-search"></i>
+        </div>
+        <ul class="dropdown-menu dropdown-menu-dark">
+            <li><a class="dropdown-item" href="#">Google</a></li>
+        </ul>
+    </div>
+
+    <button class="action-btn" onclick="addMsg('agent','Followup')">Followup</button>
+    <button class="action-btn" onclick="addMsg('agent','Objeción')">Objeción</button>
+    <button class="action-btn" onclick="addMsg('agent','Cerrar Venta')">Cerrar Venta</button>
+
+    <div class="dropend">
+        <div class="header-cell ic-kill" data-bs-toggle="dropdown">
+            <i class="bi bi-x-circle"></i>
+        </div>
+        <ul class="dropdown-menu dropdown-menu-dark">
+            <li><a class="dropdown-item text-danger" href="#">Kill</a></li>
+        </ul>
+    </div>
+
+    <button class="action-btn" onclick="addMsg('agent','Agendar Call')">Agendar Call</button>
+    <button class="action-btn" onclick="addMsg('agent','Enviar Diag')">Enviar Diag</button>
+    <button class="action-btn" onclick="addMsg('agent','Cerrar convo')">Cerrar convo</button>
+
+</div>
+
+
+</div>
+
+

@@ -1,0 +1,129 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Scenario Configurator | Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest"></script>
+<link rel="stylesheet" href="{% static 'console/css/config.css' %}">
+<style>
+/* Panel minimalista */
+.sidebar { width: 220px; float: left; background:#0a0f1a; padding:10px; color:#fff; }
+.sidebar .tab-link { padding:8px; cursor:pointer; margin-bottom:4px; background:#111827; border-radius:4px; display:flex; align-items:center; gap:6px; }
+.sidebar .tab-link.active { background:#fbbf24; color:#05070a; }
+.main-content { margin-left:240px; padding:15px; background:#05070a; color:#f1f5f9; min-height:90vh; }
+.slot-grid { display:grid; grid-template-columns: repeat(9, 1fr); gap:6px; margin-top:10px; }
+.slot-grid .button-slot { background:#1e293b; padding:6px; border-radius:4px; text-align:center; cursor:pointer; }
+.slot-grid .button-slot.active { background:#22c55e; color:#05070a; }
+.slot-grid .button-slot i { vertical-align:middle; margin-right:4px; }
+.header { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar con tabs de escenario -->
+<aside class="sidebar">
+    {% for tab in tabs %}
+        <div class="tab-link {% if forloop.first %}active{% endif %}" onclick="showTab('{{ tab.key }}')">
+            <i data-lucide="{{ tab.icon }}"></i> {{ tab.name }}
+        </div>
+    {% endfor %}
+</aside>
+
+<main class="main-content">
+    <div class="header">
+        <h2 id="tab-title">{{ tabs.0.name|upper }}</h2>
+        <button onclick="saveScenarioConfig()">Guardar Configuración</button>
+    </div>
+
+    <!-- Slot grid para botones de la tab -->
+    {% for tab in tabs %}
+    <div class="tab-content" id="tab-{{ tab.key }}" style="{% if not forloop.first %}display:none{% endif %}">
+        <h3>Solapa {{ forloop.counter }}</h3>
+        <div class="slot-grid">
+            {% for i in 1|to:9 %}
+            <div class="button-slot" data-slot="{{ i }}" data-button-id="">
+                <i data-lucide="list-checks"></i>
+                <span class="button-label">Vacío</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</main>
+
+<script>
+const tabs = {{ tabs|safe }};
+const buttonsData = {{ buttons_json|safe }};  // Lista completa de botones con acciones/eventos
+let currentTab = tabs[0].key;
+
+// Render inicial
+document.addEventListener('DOMContentLoaded', () => {
+    renderTab(currentTab);
+    document.querySelectorAll('.tab-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            showTab(link.getAttribute('onclick').match(/'(.+)'/)[1]);
+        });
+    });
+});
+
+// Cambiar tab
+function showTab(tabKey) {
+    document.querySelectorAll('.tab-link').forEach(l => l.classList.remove('active'));
+    document.querySelector(`.tab-link[onclick*="${tabKey}"]`).classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(c => c.style.display='none');
+    document.getElementById(`tab-${tabKey}`).style.display='block';
+    currentTab = tabKey;
+}
+
+// Render slots
+function renderTab(tabKey) {
+    const container = document.getElementById(`tab-${tabKey}`);
+    const slots = container.querySelectorAll('.button-slot');
+    slots.forEach(slot => {
+        const slotIndex = slot.dataset.slot;
+        const button = getButtonForTabSlot(tabKey, slotIndex);
+        if(button){
+            slot.dataset.buttonId = button.id;
+            slot.querySelector('.button-label').innerText = button.label;
+            if(button.active) slot.classList.add('active');
+            // Asignar icono
+            const iEl = slot.querySelector('i');
+            if(iEl) iEl.setAttribute('data-lucide', button.icon || 'list-checks');
+        } else {
+            slot.dataset.buttonId = '';
+            slot.querySelector('.button-label').innerText = 'Vacío';
+            slot.classList.remove('active');
+        }
+    });
+    if(window.lucide) lucide.createIcons();
+}
+
+// Ejemplo de función que devuelve button asignado a tab+slot
+function getButtonForTabSlot(tabKey, slotIndex){
+    if(!buttonsData[tabKey]) return null;
+    return buttonsData[tabKey].find(b => b.slot == slotIndex) || null;
+}
+
+// Guardar configuración
+function saveScenarioConfig(){
+    const payload = {};
+    tabs.forEach(tab => {
+        const container = document.getElementById(`tab-${tab.key}`);
+        const slots = container.querySelectorAll('.button-slot');
+        payload[tab.key] = Array.from(slots).map(slot => ({
+            slot: slot.dataset.slot,
+            buttonId: slot.dataset.buttonId
+        }));
+    });
+    fetch('/scenario/save-config/', {
+        method:'POST',
+        headers: {'Content-Type':'application/json', 'X-CSRFToken':'{{ csrf_token }}'},
+        body: JSON.stringify(payload)
+    }).then(r=>r.ok?console.log('Guardado!'):console.error('Error'));
+}
+</script>
+<script src="https://unpkg.com/lucide@latest"></script>
+</body>
+</html>

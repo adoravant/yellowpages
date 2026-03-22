@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Matrix Console</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-8">
+
+    <div x-data="matrixConsole()" x-init="init()" class="max-w-4xl mx-auto">
+        
+        <div class="flex justify-between items-end mb-8 border-b border-slate-700 pb-4">
+            <div>
+                <h1 class="text-2xl font-bold text-white" x-text="lead.name">Cargando Lead...</h1>
+                <p class="text-slate-400">Etapa actual: 
+                    <span class="text-blue-400 font-mono tracking-widest uppercase" x-text="stage">VALIDATION</span>
+                </p>
+            </div>
+            <div class="text-right">
+                <p class="text-xs text-slate-500 uppercase">Último Contexto</p>
+                <span class="bg-slate-800 px-3 py-1 rounded text-sm font-mono text-emerald-400" x-text="last_intent || 'INICIO'">-</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4">
+            
+            <template x-for="(btn, index) in grid.AVANCE" :key="'adv-'+index">
+                <button 
+                    @click="clickButton(btn.id)"
+                    :disabled="!btn"
+                    :class="btn ? 'bg-emerald-500/10 border-emerald-500/50 hover:bg-emerald-500/20' : 'bg-slate-800/50 border-slate-700 opacity-20 cursor-not-allowed'"
+                    class="group relative h-32 border-2 rounded-xl transition-all duration-200 flex flex-col items-center justify-center gap-2 p-4 text-center">
+                    <div class="p-2 rounded-full bg-emerald-500/20 group-hover:scale-110 transition-transform">
+                        <i :data-lucide="btn?.icon || 'arrow-up-right'" class="w-6 h-6 text-emerald-400"></i>
+                    </div>
+                    <span class="text-sm font-semibold" x-text="btn?.label || 'Vacío'"></span>
+                    <div class="absolute top-2 right-2 flex items-center gap-1">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    </div>
+                </button>
+            </template>
+
+            <template x-for="(btn, index) in grid.STALL" :key="'sta-'+index">
+                <button 
+                    @click="clickButton(btn.id)"
+                    :disabled="!btn"
+                    :class="btn ? 'bg-amber-500/10 border-amber-500/50 hover:bg-amber-500/20' : 'bg-slate-800/50 border-slate-700 opacity-20 cursor-not-allowed'"
+                    class="group h-32 border-2 rounded-xl transition-all duration-200 flex flex-col items-center justify-center gap-2 p-4 text-center">
+                    <i :data-lucide="btn?.icon || 'help-circle'" class="w-6 h-6 text-amber-400 group-hover:rotate-12 transition-transform"></i>
+                    <span class="text-sm font-semibold" x-text="btn?.label || 'Vacío'"></span>
+                </button>
+            </template>
+
+            <template x-for="(btn, index) in grid.CLOSE" :key="'out-'+index">
+                <button 
+                    @click="clickButton(btn.id)"
+                    :disabled="!btn"
+                    :class="btn ? 'bg-rose-500/10 border-rose-500/50 hover:bg-rose-500/20' : 'bg-slate-800/50 border-slate-700 opacity-20 cursor-not-allowed'"
+                    class="group h-32 border-2 rounded-xl transition-all duration-200 flex flex-col items-center justify-center gap-2 p-4 text-center">
+                    <i :data-lucide="btn?.icon || 'x-circle'" class="w-6 h-6 text-rose-400 group-hover:scale-90 transition-transform"></i>
+                    <span class="text-sm font-semibold" x-text="btn?.label || 'Vacío'"></span>
+                </button>
+            </template>
+
+        </div>
+
+        <div x-show="loading" class="fixed bottom-10 right-10 bg-blue-600 px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 animate-bounce">
+            <span class="text-sm font-bold">Procesando Intento...</span>
+        </div>
+
+    </div>
+
+    <script>
+        function matrixConsole() {
+            return {
+                lead: { name: 'Empresa Tech S.A.' },
+                stage: 'VALIDATION',
+                last_intent: null,
+                loading: false,
+                grid: {
+                    AVANCE: [null, null, null],
+                    STALL: [null, null, null],
+                    CLOSE: [null, null, null]
+                },
+
+                async init() {
+                    // Carga inicial del escenario
+                    await this.fetchScenario();
+                    lucide.createIcons();
+                },
+
+                async fetchScenario() {
+                    // Aquí llamarías a tu endpoint: /api/matrix/scenario/?lead_id=...
+                    // Simulamos respuesta del backend basada en tu STAGES_CONFIG
+                    const response = {
+                        stage: this.stage,
+                        last_intent_slug: this.last_intent,
+                        grid: {
+                            AVANCE: [
+                                { id: 1, label: 'Hook: Dinero', icon: 'dollar-sign' },
+                                { id: 2, label: 'Hook: Técnico', icon: 'cpu' },
+                                { id: 3, label: 'Hook: Urgencia', icon: 'zap' }
+                            ],
+                            STALL: [
+                                { id: 4, label: 'Quién soy', icon: 'help-circle' },
+                                { id: 5, label: 'Origen Data', icon: 'database' },
+                                { id: 6, label: 'Valor Corto', icon: 'shield-check' }
+                            ],
+                            CLOSE: [
+                                { id: 7, label: 'No Califica', icon: 'trash-2' },
+                                { id: 8, label: 'Spam', icon: 'shield-alert' },
+                                { id: 9, label: 'Nurturing', icon: 'clock' }
+                            ]
+                        }
+                    };
+                    
+                    this.grid = response.grid;
+                    this.$nextTick(() => lucide.createIcons());
+                },
+
+                async clickButton(buttonId) {
+                    this.loading = true;
+                    console.log("Ejecutando Button ID:", buttonId);
+
+                    // Simulamos el POST al resolver: /api/matrix/click/
+                    // El backend devolvería el nuevo stage y el nuevo escenario
+                    setTimeout(() => {
+                        // Simulación de "Salto de etapa" si es un botón de avance
+                        if (buttonId <= 3) {
+                            this.stage = 'PAIN';
+                            this.last_intent = 'intent_pain_adv'; 
+                        } else {
+                            this.last_intent = 'intent_val_obj';
+                        }
+                        
+                        this.fetchScenario();
+                        this.loading = false;
+                        alert("Evento registrado. Tarea de mensaje creada.");
+                    }, 800);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

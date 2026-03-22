@@ -1,0 +1,95 @@
+{% extends "console/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+
+<header style="margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+    <h2 style="font-weight:900; letter-spacing:-1px;">
+        Trigger: <span id="display-name" style="color:var(--accent)">{{ trigger.name|default:"Nueva Regla" }}</span>
+    </h2>
+
+    <div class="header-actions">
+        <button onclick="resetBuilder()" class="btn-secondary">Clear DNA</button>
+        <button id="save-trigger-btn" class="btn-accent">GUARDAR REGLA</button>
+    </div>
+</header>
+
+<div class="tabs-header">
+    <button class="tab-btn active" data-tab="tab-when">01. WHEN</button>
+    <button class="tab-btn" data-tab="tab-if">02. IF (DNA)</button>
+    <button class="tab-btn" data-tab="tab-then">03. THEN</button>
+</div>
+
+<!-- PARTIALS -->
+<div id="tab-when" class="tab-content active">
+    {% include "console/partials/trigger_when.html" %}
+</div>
+
+<div id="tab-if" class="tab-content">
+    {% include "console/partials/trigger_if.html" %}
+</div>
+
+<div id="tab-then" class="tab-content">
+    {% include "console/partials/trigger_then.html" %}
+</div>
+
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+    window.VARIABLE_SCHEMA = {{ variable_schema|safe }};
+    window.VARIABLES = {{ variables|safe }};
+    window.VARIABLE_TYPES = {{ variable_types|safe }};
+    window.OPERATOR_CATEGORIES = {{ operator_categories|safe }};
+</script>
+
+<!-- 🔥 1. MERMAID PRIMERO -->
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+
+<!-- 🔥 2. INIT CUANDO EL DOM ESTÁ LISTO -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    if (window.mermaid) {
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'dark',
+            securityLevel: 'loose',
+            flowchart: { 
+                useMaxWidth: true, 
+                htmlLabels: true, 
+                curve: 'basis' 
+            }
+        });
+        console.log("Mermaid OK");
+    } else {
+        console.error("Mermaid NO cargó");
+    }
+});
+</script>
+
+
+<!-- 2️⃣ Luego builder, que depende de autocomplete -->
+<script src="{% static 'console/js/trigger_builder.js' %}"></script>
+
+<!-- 3️⃣ Luego mermaid, porque updateLogicString puede llamarlo -->
+<script src="{% static 'console/js/trigger_mermaid.js' %}"></script>
+
+<!-- 4️⃣ Tabs, independientes pero init los usará -->
+<script src="{% static 'console/js/trigger_tabs.js' %}"></script>
+
+<!-- 5️⃣ Finalmente init, que arranca todo -->
+<script src="{% static 'console/js/trigger_init.js' %}"></script>
+
+<!-- 🔥 4. INIT APP -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    resetBuilder();
+    openTab(null, 'tab-when');
+});
+</script>
+
+{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'console/css/trigger_detail.css' %}">
+{% endblock %}

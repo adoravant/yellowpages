@@ -1,0 +1,86 @@
+/* --- CONTENEDOR ESPECÍFICO --- */
+.lead-intel-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Empuja los tabs al fondo */
+}
+
+/* --- CONTENIDO DINÁMICO --- */
+.info-pane-container {
+    flex: 1; /* Ocupa todo el espacio disponible */
+    overflow-y: auto;
+    padding-right: 5px;
+    margin-bottom: 10px;
+}
+
+.ui-item {
+    background: rgba(30, 41, 59, 0.3);
+    border: 1px solid var(--border);
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    border-radius: 2px;
+    font-size: 11px;
+    color: var(--text);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.text-accent { color: var(--accent); }
+
+/* --- FILTROS (SUB-TABS) --- */
+.filter-row {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 8px;
+    min-height: 20px; /* Evita saltos cuando está vacío */
+}
+
+.btn-filter {
+    background: #010409;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 9px;
+    padding: 2px 8px;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.btn-filter:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* --- TABS INFERIORES FIJOS --- */
+.tabs-bottom-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px; /* Efecto de línea divisoria */
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.tab-btn {
+    background: #0a0f1a;
+    border: none;
+    color: var(--muted);
+    padding: 8px 2px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    background: var(--accent-glow);
+    color: var(--accent);
+    box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.tab-btn:hover:not(.active) {
+    background: rgba(255,255,255,0.05);
+    color: var(--text);
+}

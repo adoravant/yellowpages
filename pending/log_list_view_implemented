@@ -1,0 +1,141 @@
+# ==========================================
+# sales/views.py
+# ==========================================
+
+from django.views.generic import ListView
+from django.shortcuts import get_object_or_404
+from main.models import LeadFull
+from .models import Event
+
+
+class LeadEventListView(ListView):
+    model = Event
+    template_name = "sales/lead_events.html"
+    context_object_name = "events"
+    paginate_by = 50
+
+    def get_queryset(self):
+        self.lead = get_object_or_404(LeadFull, pk=self.kwargs["lead_id"])
+        return (
+            Event.objects
+            .filter(lead=self.lead)
+            .select_related("event_type")
+            .order_by("-created_at")
+        )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["lead"] = self.lead
+        return context
+
+
+
+# ==========================================
+# sales/urls.py
+# ==========================================
+
+from django.urls import path
+from .views import LeadEventListView
+
+urlpatterns = [
+    path(
+        "lead/<int:lead_id>/events/",
+        LeadEventListView.as_view(),
+        name="lead-events",
+    ),
+]
+
+
+
+# ==========================================
+# sales/templates/sales/lead_events.html
+# ==========================================
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>Event Timeline - {{ lead.name }}</h2>
+
+<table class="table table-striped table-sm">
+
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Event</th>
+            <th>Channel</th>
+            <th>Metadata</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+    {% for event in events %}
+
+        <tr>
+
+            <td>
+                {{ event.created_at }}
+            </td>
+
+            <td>
+                {{ event.event_type.slug }}
+            </td>
+
+            <td>
+                {{ event.channel|default:"-" }}
+            </td>
+
+            <td>
+                <pre style="max-width:400px; white-space:pre-wrap;">
+{{ event.metadata|default:"-" }}
+                </pre>
+            </td>
+
+        </tr>
+
+    {% empty %}
+
+        <tr>
+            <td colspan="4">
+                No events recorded for this lead.
+            </td>
+        </tr>
+
+    {% endfor %}
+
+    </tbody>
+
+</table>
+
+
+{% if is_paginated %}
+
+<div style="margin-top:20px;">
+
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">← Prev</a>
+    {% endif %}
+
+    &nbsp; Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }} &nbsp;
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Next →</a>
+    {% endif %}
+
+</div>
+
+{% endif %}
+
+{% endblock %}
+
+
+
+# ==========================================
+# LINK DESDE TEMPLATE DE LEAD
+# (ej: lead_detail.html)
+# ==========================================
+
+<a href="{% url 'lead-events' lead.id %}">
+    <i class="fas fa-stream"></i> Event Timeline
+</a>
